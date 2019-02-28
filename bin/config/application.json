@@ -1,0 +1,35 @@
+{
+    "name": "waf_project",
+    "version": "1.0.0",
+    "sourcePath": "/Users/guanyj/Documents/waf_project",
+    "runtimePath": "/Users/guanyj/Documents/waf_runtime",
+    "distPath": "/Users/guanyj/Documents/waf_dist",
+    "subs": [
+        {
+            "name": "manage",
+            "modules": [
+                {
+                    "name": "user"
+                },
+                {
+                    "name": "department"
+                }
+            ]
+        },
+        {
+            "name": "task",
+            "modules": [
+                {
+                    "name": "current"
+                },
+                {
+                    "name": "history"
+                }
+            ]
+        },
+        {
+            "name": "topology"
+        }
+    ],
+    "selectedSub": "topology"
+}

@@ -3,18 +3,25 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-01 08:51:20
- * @LastEditTime: 2019-02-28 12:13:44
+ * @LastEditTime: 2019-03-01 18:31:42
  */
-
 const commander = require('commander');
-const {init, ls, serve} = require('./commands');
+const {init, ls, serve, install, update} = require('./commands');
 // const {createComponent} = require('./create_component');
 
 commander.version('v1.0.0', '-v --version');
 
-commander.command('init <sourcePath>')
+commander.command('init')
    .description('初始化WAF本地环境')
    .action(init);
+
+commander.command('install')
+    .description('安装公共依赖')
+    .action(install);
+
+commander.command('update')
+    .description('更新应用代码')
+    .action(update);
 
 // commander.command('create <component>')
 //    .description('生成waf_grid组件')

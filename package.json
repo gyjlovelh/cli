@@ -16,6 +16,7 @@
     "author": "guanyj",
     "license": "ISC",
     "dependencies": {
+        "@waf-modules/waf-manage-project": "^1.0.4",
         "chalk": "^2.4.2",
         "commander": "^2.19.0",
         "ejs": "^2.6.1",

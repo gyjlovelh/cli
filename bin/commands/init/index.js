@@ -2,7 +2,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-26 17:37:34
- * @LastEditTime: 2019-03-01 16:59:53
+ * @LastEditTime: 2019-03-02 12:45:03
  */
 
 const fs = require('fs');
@@ -26,6 +26,7 @@ const {useFramework} = require('../../util/runtime.util');
 
 let application;
 
+let applicationJsonPath = path.join(__dirname, '../../../config/application.json');
 /**
  * 初始化WAF项目
  * 
@@ -63,7 +64,7 @@ function init() {
             if (application.subs.length > 0) {
                 application.selectedSub = application.subs[0].name;
             }
-            fs.writeFileSync(path.join(__dirname, '../../config/application.json'), JSON.stringify(application, null, 4));
+            fs.writeFileSync(applicationJsonPath, JSON.stringify(application, null, 4));
 
             // 初始化根模块tsconfig.json    
             writeFileSyncSafe(`${application.sourcePath}/tsconfig.json`,

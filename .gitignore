@@ -9,7 +9,7 @@
 /node_modules
 
 # config
-/bin/config
+/config
 
 # IDEs and editors
 /.idea

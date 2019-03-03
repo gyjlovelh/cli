@@ -13,7 +13,9 @@ import { {{module.camelName}}Component } from './{{module.filePrefix}}.component
         CommonModule,
         {{module.camelName}}RoutingModule
     ],
-    declarations: [],
+    declarations: [
+        {{module.camelName}}Component
+    ],
     exports: []
 })
 export class {{module.camelName}}Module { }

@@ -17,12 +17,22 @@ let hendler = {
         return fss.readJSONSync(path.join(__dirname, '../../config/application.json')).subs;
     },
 
+    set selectedSub(subName) {
+        let config = this.getApplicationConfig();
+        config.selectedSub = subName;
+        fss.outputJSONSync(path.join(__dirname, '../../config/application.json'), config, {spaces: 4});
+    },
+
     get selectedSub() {
         return fss.readJSONSync(path.join(__dirname, '../../config/application.json')).selectedSub;
     },
 
     get sourceCodePath() {
         return fss.readJSONSync(path.join(__dirname, '../../config/application.json')).sourceCodePath;
+    },
+
+    get runtimePath() {
+        return fss.readJSONSync(path.join(__dirname, '../../config/application.json')).runtimePath;
     },
 
     /**

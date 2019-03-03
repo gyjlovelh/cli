@@ -12,17 +12,27 @@ const appConfig = require('../../util/app-config');
 const art = require('art-template');
 const path = require('path');
 const fnUtil = require('../../util/file-name.util');
+const cp = require('child_process');
 
 const identifier = '[初始化] ';
 
 let handler = {
     init: function () {
         try {
+            let defaultSourceCodePath = '';
+            log.info(identifier, '当前操作为' + os.type());
+            if (os.type() === 'Windows_NT') {
+                // windows
+                defaultSourceCodePath = 'd:/workspace/sourceCode';
+            } else {
+                // MacOs
+                defaultSourceCodePath = '/Users/guanyj/workspace/sourceCode';
+            }
             let steps = [{
                 type: 'input',
                 message: '请输入产品工作空间路径',
                 name: 'sourceCodePath',
-                default: '/Users/guanyj/workspace/hibiscus'
+                default: defaultSourceCodePath
             }
         ];
             inquirer.prompt(steps).then(handleInit);
@@ -38,10 +48,6 @@ let handler = {
         function handleInit(inputs) {
             if (!inputs.sourceCodePath) {
                 throw new Error(identifier + '请输入正确的工作目录');
-            }
-
-            if (os.type() === 'Windows_NT') {
-                throw new Error(identifier + '目前不支持windows操作系统');
             }
 
             if (!fss.existsSync(inputs.sourceCodePath + '/application.json')) {
@@ -70,7 +76,27 @@ let handler = {
                 resolveFramework(templateDir, appConfig.getApplicationConfig().sourceCodePath + '/' + module.name, module);
             });
 
-            // 4.发布选中子应用工程
+            // 4.生成运行环境骨架
+            appConfig.subs.forEach(sub => {
+                let rtDir = `${appConfig.runtimePath}/${sub.name}`;
+                fss.ensureDirSync(rtDir);
+
+                // 首次创建运行环境骨架
+                if (!fss.existsSync(`${rtDir}/framework/package.json`)) {
+                    log.info(identifier, cp.execSync(`ng new framework --skip-install --style=scss --skip-tests --prefix bss`, {cwd: rtDir}));
+                }
+                
+                // 
+                const pkg = fss.readJSONSync(`${rtDir}/framework/package.json`);
+                // 写入公共依赖
+
+                // 写入子应用模块
+                if (!pkg.dependencies.hasOwnProperty(`@bss-modules/${sub.name}`)) {
+                    pkg.dependencies[`@bss_modules/${sub.name}`] = '~1.0.0';
+                    fss.outputJSONSync(`${rtDir}/framework/package.json`, pkg, {spaces: 4});
+                    log.info(identifier, '[修改文件] ' + `${rtDir}/framework/package.json`);
+                }
+            });
             
         }
 

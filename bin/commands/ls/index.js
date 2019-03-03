@@ -4,31 +4,39 @@
  * @Date: 2019-02-27 21:54:41
  * @LastEditTime: 2019-03-02 15:22:01
  */
-const fs = require('fs');
-const path = require('path');
+const fss = require('fs-extra');
 const inquirer = require('inquirer');
-const {useFramework} = require('../../util/runtime.util');
-
-let applicationJsonPath = path.join(__dirname, '../../../config/application.json');
+const log = require('../../util/logger');
+const appConfig = require('../../util/app-config');
+const identifier = '[应用] ';
 
 function ls() {
-    let application = fs.readFileSync(applicationJsonPath, 'utf8');
-    application = JSON.parse(application);
-    const subNames = application.subs.map(item => item.name);
-    if (!application.selectedSub) {
-        application.selectedSub = subNames[0];
+    const subNames = appConfig.subs.map(item => item.name);
+    if (!appConfig.selectedSub) {
+        appConfig.selectedSub = appConfig.subs[0];
     }
 
     inquirer.prompt([{
         type: 'list',
         message: '选择子应用',
         name: 'subName',
-        default: application.selectedSub,
+        default: appConfig.selectedSub,
         choices: subNames
     }]).then(({subName}) => {
-        application.selectedSub = subName;
-        useFramework(application, application.selectedSub);
-        fs.writeFileSync(applicationJsonPath, JSON.stringify(application, null, 4), {flag: 'w'});
+        appConfig.selectedSub = subName;
+
+        const targetPath = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework`;
+        fss.ensureDirSync(targetPath)
+        
+        let pkg = fss.readJSONSync(`${targetPath}/package.json`);
+       
+        // if (!pkg.dependencies.hasOwnProperty(`@bss-modules/${appConfig.selectedSub}`)) {
+        //     pkg.dependencies[`@bss-modules/${appConfig.selectedSub}`] = '~1.0.0';
+        // }
+    
+        
+        fss.outputJSONSync(`${targetPath}/package.json`, pkg, {spaces: 4});
+        log.info(identifier, '切换应用' + appConfig.selectedSub);
     });
 }
 

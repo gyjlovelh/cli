@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-03-02 12:57:49
  */
 const commander = require('commander');
-const {init, ls, serve, install, update} = require('./commands');
+const {init, ls, serve, install, update, publish} = require('./commands');
 
 commander.version('v1.0.0', '-v --version');
 
@@ -22,9 +22,9 @@ commander.command('update')
     .description('更新应用代码')
     .action(update);
 
-// commander.command('publish')
-//     .description('发布模块到仓库')
-//     .action(publish);
+commander.command('publish')
+    .description('发布模块到仓库')
+    .action(publish);
 
 // commander.command('create <component>')
 //    .description('生成waf_grid组件')

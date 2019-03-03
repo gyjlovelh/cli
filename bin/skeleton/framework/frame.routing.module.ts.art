@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import { {{module.camelName}}Component } from './{{module.camelName}}.component'
+import { {{module.camelName}}Component } from './{{module.filePrefix}}.component'
 
 export const routes: Routes = [
     {
@@ -17,7 +17,7 @@ export const routes: Routes = [
     imports: [
         RouterModule.forChild(routes)
     ],
-    export: [
+    exports: [
         RouterModule
     ]
 })

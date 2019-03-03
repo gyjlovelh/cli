@@ -1,0 +1,13 @@
+<!--The content below is only a placeholder and can be replaced.-->
+
+<div id="login">
+  this.is login
+</div>
+
+<div id="nav">
+  this.is nav
+</div>
+
+<div id="main">
+  <<router-outlet></router-outlet>
+</div>

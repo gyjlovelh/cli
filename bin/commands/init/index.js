@@ -2,173 +2,108 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-26 17:37:34
- * @LastEditTime: 2019-03-02 12:45:03
+ * @LastEditTime: 2019-03-03 11:36:57
  */
-
-const fs = require('fs');
-const path = require('path');
 const inquirer = require('inquirer');
-const {
-    renderNormalComponent, 
-    renderFrameworkModule, 
-    renderTsconfig, 
-    renderSharedModule,
-    renderTslint,
-    renderFrameworkPackage,
-    renderNormalModule,
-    renderRoutingModule,
-    renderFrameworkIndex
-} = require('../../util/render');
-const {publishFramework} = require('../../util/publish.util');
-const {mkdirSyncSafe, writeFileSyncSafe} = require('../../util/fs-util');
-const {anyToCamel, camelToLetter} = require('../../util/file-name.util');
-const {useFramework} = require('../../util/runtime.util');
+const fss = require('fs-extra');
+const os = require('os');
+const log = require('../../util/logger');
+const appConfig = require('../../util/app-config');
+const art = require('art-template');
+const path = require('path');
+const fnUtil = require('../../util/file-name.util');
 
-let application;
+const identifier = '[初始化] ';
 
-let applicationJsonPath = path.join(__dirname, '../../../config/application.json');
-/**
- * 初始化WAF项目
- * 
- * @param {string} name 
- */
-function init() {
-    try {
-        inquirer.prompt([
-            {
-                type: 'confirm', 
-                message: '[初始化平台本地环境] 是否确认进入初始化流程(y|n)',
-                name: 'abcd',
-                default: true
-            },
-            {
+let handler = {
+    init: function () {
+        try {
+            let steps = [{
                 type: 'input',
-                message: '[初始化平台本地环境] 请输入本地产品代码根路径',
-                name: 'sourcePath'
+                message: '请输入产品工作空间路径',
+                name: 'sourceCodePath',
+                default: '/Users/guanyj/workspace/hibiscus'
             }
-        ]).then(({sourcePath}) => {
-            // 读取并解析 application.json 文件
-            application = fs.readFileSync(`${sourcePath}/application.json`, 'utf8');
-            application = JSON.parse(application);
-            // 格式化应用名和模块名
-            application.sourcePath = sourcePath;
-            application.subs.forEach(child => {
-                child.name = camelToLetter(anyToCamel(child.name));
-                if (!child.modules) {
-                    child.modules = [];
-                }
-                child.modules.forEach(mod => {
-                    mod.name = camelToLetter(anyToCamel(mod.name));
-                });
+        ];
+            inquirer.prompt(steps).then(handleInit);
+        } catch (err) {
+            throw new Error(err);
+        }
+
+        /**
+         * 初始化
+         * 
+         * @param {object} inputs 
+         */
+        function handleInit(inputs) {
+            if (!inputs.sourceCodePath) {
+                throw new Error(identifier + '请输入正确的工作目录');
+            }
+
+            if (os.type() === 'Windows_NT') {
+                throw new Error(identifier + '目前不支持windows操作系统');
+            }
+
+            if (!fss.existsSync(inputs.sourceCodePath + '/application.json')) {
+                throw new Error(identifier + '工作目录下缺少application.json文件');
+            }
+            
+            // 1.生成工作目录配置文件
+            appConfig.initApplicationConfig(inputs);
+            log.info(identifier, '同步application.json');
+
+            // 2.记录应用骨架应用
+            
+            // console.log(art);
+            // 3.生成子应用工程
+            appConfig.subs.forEach(sub => {
+                let templateDir = path.join(__dirname, '../../skeleton/framework');
+                let module = {
+                    name: sub.name,
+                    filePrefix:  sub.name,
+                    camelName: fnUtil.anyToCamel(sub.name),
+                    pkg: '@bss_modules',
+                    version: '1.0.0',
+                    rulesDirectory: `${appConfig.runtimePath}/${sub.name}/framework/node_modules/codelyzer`,
+                    baseUrl: `${appConfig.runtimePath}/${sub.name}/framework/node_modules`
+                };
+                resolveFramework(templateDir, appConfig.getApplicationConfig().sourceCodePath + '/' + module.name, module);
             });
-            if (application.subs.length > 0) {
-                application.selectedSub = application.subs[0].name;
-            }
-            fs.writeFileSync(applicationJsonPath, JSON.stringify(application, null, 4));
 
-            // 初始化根模块tsconfig.json    
-            writeFileSyncSafe(`${application.sourcePath}/tsconfig.json`,
-                JSON.stringify({
-                    compilerOptions: {
-                        baseUrl: `${application.runtimePath}/node_modules`
+            // 4.发布选中子应用工程
+            
+        }
+
+        /**
+         * 遍历模板目录生成模板文件
+         * 
+         * @param {string} dir 
+         * @param {object} module 
+         */
+        function resolveFramework(dir, targetDir, module) {
+            // 模板目录下所有文件
+            const files = fss.readdirSync(dir);
+            files.forEach(filename => {
+                // 模板文件路径
+                let fileRealPath = path.join(dir, filename);
+                const stat = fss.statSync(fileRealPath);
+                if (stat.isFile()) {
+                    const template = art.render(fss.readFileSync(fileRealPath).toString(), {module});
+                    // 目标文件名
+                    let targetName = filename.replace(/frame/g, module.name).replace(/\.art$/g, '');
+                    // 目标文件地址
+                    let targetPath = `${targetDir}/${targetName}`;
+                    if (!fss.existsSync(targetPath)) {
+                        fss.outputFileSync(targetPath, template);
+                        log.info(identifier, '创建文件' + targetPath);
                     }
-                }, null, 4));
-
-            // 初始化公共依赖工程骨架；
-            initCommonSkeleton(application.sourcePath);
-
-            // 初始化子应用工程骨架
-            application.subs.forEach(child => initChildFrameworkSkeleton(child));
-
-            // todo 初始化runtime环境【默认第一个子应用】
-            useFramework(application, application.selectedSub);
-                
-
-        });
-    } catch (err) {
-        throw new Error(err);
+                } else {
+                    fss.ensureDirSync(targetDir);
+                    resolveFramework(fileRealPath, `${targetDir}/${filename}`, module);
+                }
+            });
+        }
     }
-}
-
-/**
- * 初始化公共依赖工程
- * 
- * @param {string} rootPath 
- */
-function initCommonSkeleton(rootPath) {
-    mkdirSyncSafe(`${rootPath}/waf-common`);
-    mkdirSyncSafe(`${rootPath}/waf-common/components`);
-    mkdirSyncSafe(`${rootPath}/waf-common/modules`);
-    mkdirSyncSafe(`${rootPath}/waf-common/resource`);
-    mkdirSyncSafe(`${rootPath}/waf-common/services`);
-}
-
-/**
- * 初始化子应用骨架模板
- * 
- * @param {object} child 
- */
-function initChildFrameworkSkeleton(child) {
-    let fileName = camelToLetter(anyToCamel(child.name));
-    let frameworkDir = `waf-${fileName}`;
-    const root = `${application.sourcePath}/${frameworkDir}`;
-    mkdirSyncSafe(root);
-    mkdirSyncSafe(`${root}/modules`);
-    mkdirSyncSafe(`${root}/shared`);
-    mkdirSyncSafe(`${root}/resource`);
-
-    // todo 定制 SharedModule 模板
-    writeFileSyncSafe(`${root}/shared/shared.module.ts`, renderSharedModule());
-
-    // 预制标准化组织目录
-    ['components', 'constants', 'services', 'pipes',
-        'enums', 'models', 'directives', 'entryComponents'
-    ].forEach(dir => {
-        mkdirSyncSafe(`${root}/shared/${dir}`);
-    });
-
-    // 初始化根模块
-    writeFileSyncSafe(`${root}/${fileName}.module.ts`, renderFrameworkModule(child.name));
-    writeFileSyncSafe(`${root}/index.ts`, renderFrameworkIndex(child.name));
-    let componentTemplate = renderNormalComponent(child.name);
-    writeFileSyncSafe(`${root}/${fileName}.component.scss`, componentTemplate.style);
-    writeFileSyncSafe(`${root}/${fileName}.component.html`, componentTemplate.html);
-    writeFileSyncSafe(`${root}/${fileName}.component.ts`, componentTemplate.typescript);
-    writeFileSyncSafe(`${root}/${fileName}-routing.module.ts`, renderRoutingModule(child.name + '-routing'));
-    // 写入tslint.json
-    writeFileSyncSafe(`${root}/tslint.json`, renderTslint(application, frameworkDir));
-    // 写入tsconfig.json
-    writeFileSyncSafe(`${root}/tsconfig.json`, renderTsconfig(application, frameworkDir));
-    // 写入package.json
-    writeFileSyncSafe(`${root}/package.json`, renderFrameworkPackage(frameworkDir));
-    // 写入README.md
-    writeFileSyncSafe(`${root}/README.md`, '###' + fileName);
-
-    // 解析子模块
-    child.modules && child.modules.forEach(child_module => resolveChildModuleSkeleton(root, child_module));
-
-    // 发布应用
-    publishFramework(application, child.name);
-}
-
-/**
- * 解析子应用的子模块
- * 
- * @param {string} parentPath
- * @param {any} childModule 
- */
-function resolveChildModuleSkeleton(parentPath, childModule) {
-    const childRoot = `${parentPath}/modules/${childModule.name}`;
-    mkdirSyncSafe(childRoot);
-    let fileName = camelToLetter(anyToCamel(childModule.name));
-    writeFileSyncSafe(`${childRoot}/${fileName}.module.ts`, renderNormalModule(childModule.name));
-    let componentTemplate = renderNormalComponent(childModule.name);
-    writeFileSyncSafe(`${childRoot}/${fileName}.component.scss`, componentTemplate.style);
-    writeFileSyncSafe(`${childRoot}/${fileName}.component.html`, componentTemplate.html);
-    writeFileSyncSafe(`${childRoot}/${fileName}.component.ts`, componentTemplate.typescript);
-    writeFileSyncSafe(`${childRoot}/${fileName}-routing.module.ts`, renderRoutingModule(childModule.name + '-routing'));
-}
-
-module.exports = {
-    init
 };
+
+module.exports = handler;

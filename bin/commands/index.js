@@ -9,11 +9,13 @@ const {ls} = require('./ls');
 const {serve} = require('./serve');
 const {install} = require('./install');
 const {update} = require('./update');
+const {publish} = require('./publish');
 
 module.exports = {
     init,
     ls,
     serve,
     install,
-    update
+    update,
+    publish
 };

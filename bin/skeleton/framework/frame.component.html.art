@@ -1,0 +1,4 @@
+<div class="common-page-wrapper">
+    <h3>{{module.name}} module page</h3>
+    <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,19 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from './router.module.ts';
+import { {{module.camelName}}RoutingModule } from './{{module.filePrefix}}.routing.module';
+import { {{module.camelName}}Component } from './{{module.filePrefix}}.component';
+
+/**
+ * {{module.name}} 模块
+ * @export
+ */
+@NgModule({
+    imports: [
+        CommonModule,
+        {{module.camelName}}RoutingModule
+    ],
+    declarations: [],
+    exports: []
+})
+export class {{module.camelName}}Module { }

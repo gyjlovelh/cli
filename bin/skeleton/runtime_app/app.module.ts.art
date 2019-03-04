@@ -1,0 +1,25 @@
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+
+import { {{module.camelName}}Module } from '@bss_modules/{{module.name}}'
+
+@NgModule({
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        BrowserModule,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        {{module.camelName}}Module
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
+})
+export class AppModule { }

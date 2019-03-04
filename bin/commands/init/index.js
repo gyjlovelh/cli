@@ -115,6 +115,20 @@ let handler = {
                     pkg.dependencies[`@bss_resource/${sub.name}`] = '~1.0.0';
                     fss.outputJSONSync(`${rt_dir}/framework/package.json`, pkg, {spaces: 4});
                     log.info(identifier, '[修改文件] ' + `${rt_dir}/framework/package.json`);
+
+                    // 3.渲染 /src/app 模板文件
+                    let appModule = {
+                        name: sub.name,
+                        filePrefix:  sub.name,
+                        camelName: fnUtil.anyToCamel(sub.name),
+                    }
+
+                    resolveFramework(
+                        path.join(__dirname, '../../skeleton/runtime_app'),
+                        `${appConfig.runtimePath}/${sub.name}/framework/src/app`,
+                        appModule,
+                        {overwrite: true}
+                    );
                 }
             });
 
@@ -123,10 +137,13 @@ let handler = {
         /**
          * 遍历模板目录生成模板文件
          *
-         * @param {string} dir
-         * @param {object} module
+         * @param {string} dir 模板路径
+         * @param {string} dest 目标路径
+         * @param {object} module 模板参数
+         * @param {object} options 配置
          */
-        function resolveFramework(dir, targetDir, module) {
+        function resolveFramework(dir, dest, module, options) {
+            options = options || {};
             // 模板目录下所有文件
             const files = fss.readdirSync(dir);
             files.forEach(filename => {
@@ -138,14 +155,15 @@ let handler = {
                     // 目标文件名
                     let targetName = filename.replace(/frame/g, module.name).replace(/\.art$/g, '');
                     // 目标文件地址
-                    let targetPath = `${targetDir}/${targetName}`;
-                    if (!fss.existsSync(targetPath)) {
+                    let targetPath = `${dest}/${targetName}`;
+                    if (!fss.existsSync(targetPath) || options.overwrite) {
                         fss.outputFileSync(targetPath, template);
-                        log.info(identifier, '创建文件' + targetPath);
+                        let str = options.overwrite ? '覆盖文件' : '创建文件';
+                        log.info(identifier, str + targetPath);
                     }
                 } else {
-                    fss.ensureDirSync(targetDir);
-                    resolveFramework(fileRealPath, `${targetDir}/${filename}`, module);
+                    fss.ensureDirSync(dest);
+                    resolveFramework(fileRealPath, `${dest}/${filename}`, module);
                 }
             });
         }

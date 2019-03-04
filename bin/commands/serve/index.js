@@ -13,34 +13,51 @@ const appConfig = require('../../util/app-config');
 
 const identifier = '[启动] ';
 
+const systemType = require('os').type();;
+
 let handler = {
     serve: function(arg) {
-        let args = ['serve'];
-        // 自定义host
-        arg.ip && args.push('--host', arg.ip);
-        // 自定义端口
-        arg.port && args.push('--port', arg.port);
+        try {
+            let args = ['serve'];
+            // 自定义host
+            arg.ip && args.push('--host', arg.ip);
+            // 自定义端口
+            arg.port && args.push('--port', arg.port);
+    
+            // runtime根目录
+            const targetPath = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework`;
+    
+            // 1.拷贝资源
+            copyResource();
+    
+            // 2.生成index.html
 
-        // runtime根目录
-        const targetPath = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework`;
-
-        // 1.拷贝资源
-
-        // 2.生成index.html
-        // 3.生成全局样式文件
-        // 4.生成主题样式问题
-        // 5.生成国际化文件
-
-        // 6.运行runtime工程
-        const serv = cp.spawn('ng', args, {cwd: targetPath});
-        serv.stdout.on('data', data => log.info(identifier, data));
-        serv.stderr.on('data', data => log.info(identifier, data));
-        serv.on('error', data => log.info(identifier, data));
-
-        // 7.开启文件改动监听
-        // log.info(identifier, cp.execSync(`ng serve`, {cwd: targetPath}).stdout);
-        fileChangeListener();
-
+            // 3.生成全局样式文件
+            // 4.生成主题样式问题
+            // 5.生成国际化文件
+    
+            // 6.运行runtime工程
+            let serv;
+            if (systemType === 'Windows_NT') {
+                // 添加start会新开cmd窗口
+                serv = cp.spawn('start ng', args, {cwd: targetPath, shell: 'cmd.exe'});
+            } else {
+                serv = cp.spawn('ng', args, {cwd: targetPath});
+            }
+            
+            serv.stdout.on('data', data => log.info(identifier, data));
+            serv.stderr.on('data', data => log.info(identifier, data));
+            serv.on('error', err => {
+                throw new Error(err)
+            });
+    
+            // 7.开启文件改动监听
+            // log.info(identifier, cp.execSync(`ng serve`, {cwd: targetPath}).stdout);
+            fileChangeListener();
+        } catch (err) {
+            throw new Error(err);
+        }
+    
         // 监听文件变化
         function fileChangeListener() {
             const chokidar = require('chokidar');
@@ -57,23 +74,31 @@ let handler = {
                     // 兼容windows系统
                     let file_path = path.replace(/\\/g, '/');
 
-                    let file_module = path.split(`/${appConfig.selectedSub}/module/`)[1];
+                    let file_module = file_path.split(`/${appConfig.selectedSub}/module/`)[1];
 
                     let target_path = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework/node_modules/@bss_modules/${appConfig.selectedSub}/${file_module}`;
                     // 将变更文件复制到runtime环境
 
-                    fss.copyFileSync(file_path, target_path);
+                    fss.copySync(file_path, target_path, {overwrite: true});
                     log.info('[构建]',  '文件发生变化：' + file_path + ' copy to: ' + target_path);
                 })
                 .on('error', error => log.error(identifier, error));
         }
 
+        /**
+         * 拷贝resource/config
+         */
         function copyResource() {
             // 清空资源目录
             let dest = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework/src/assets`;
-            fss.removeSync(dest);
-
-
+            fss.emptyDirSync(dest);
+            // 将resource目录下的config拷贝过来
+            let target = `${appConfig.sourceCodePath}/${appConfig.selectedSub}/resource/config`;
+            
+            // 拷贝config配置
+            fss.copySync(target, `${dest}/config`);
+            log.info('[copy] ', '复制文件：' + target + ' => ' + `${dest}/config`);
+            
         }
     }
 };

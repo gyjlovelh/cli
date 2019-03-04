@@ -28,6 +28,7 @@
     },
     "devDependencies": {
         "@types/chalk": "^2.2.0",
-        "@types/fs-extra": "^5.0.5"
+        "@types/fs-extra": "^5.0.5",
+        "chokidar": "^2.1.2"
     }
 }

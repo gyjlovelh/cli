@@ -12,10 +12,13 @@ function install() {
     try {
         let targetPath = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework`;
         let pkg = fss.readJSONSync(`${targetPath}/package.json`);
-        // 补丁：解决 rxjs^6.4.0 转为 ^6.0.0
-        pkg.dependencies.rxjs = '^6.0.0';
 
-        let bssPkgs = Object.keys(pkg.dependencies).filter(key => key.includes('@bss')).join(' ');
+        pkg.dependencies.rxjs = '6.0.0';
+
+        let bssPkgs = Object.keys(pkg.dependencies)
+            .filter(key => key.includes('@bss'))
+            .map(key => `${key}@latest`).join(' ');
+
         let selfDep = Object.keys(pkg.dependencies)
             .filter(key => !key.includes('@bss'))
             .map(key => `${key}@${pkg.dependencies[key]}`).join(' ');

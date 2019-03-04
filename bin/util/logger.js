@@ -4,16 +4,28 @@ const chalk = require('chalk');
 
 let handler = {
     info: function(identifer, msg) {
-        console.log(chalk.cyanBright.bold(identifer) + chalk.whiteBright('[INFO] ') + chalk.white(msg));
+        handler.segLine(msg).forEach(line => {
+            console.log(chalk.cyanBright.bold(identifer) + chalk.whiteBright('[INFO] ') + chalk.white(line));
+        });
     },
     tip: function(identifer, msg) {
-        console.log(chalk.cyanBright.bold(identifer) + chalk.blue('[TIP] ') + chalk.white(msg));
+        handler.segLine(msg).forEach(line => {
+            console.log(chalk.cyanBright.bold(identifer) + chalk.blue('[TIP] ') + chalk.white(line));
+        });
     },
     warn: function(identifer, msg) {
-        console.log(chalk.cyanBright.bold(identifer) + chalk.yellow('[WARN] ') + chalk.white(msg));
+        handler.segLine(msg).forEach(line => {
+            console.log(chalk.cyanBright.bold(identifer) + chalk.yellow('[WARN] ') + chalk.white(line));
+        });
     },
     error: function(identifer, msg) {
-        console.log(chalk.cyanBright.bold(identifer) + chalk.red('[ERROR] ') + chalk.white(msg));
+        handler.segLine(msg).forEach(line => {
+            console.log(chalk.cyanBright.bold(identifer) + chalk.red('[ERROR] ') + chalk.white(line));
+        });
+    },
+
+    segLine(msg) {
+        return msg.toString().split(/\n/g).filter(line => !!line);
     }
 };
 

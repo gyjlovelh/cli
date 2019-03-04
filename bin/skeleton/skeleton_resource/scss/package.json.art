@@ -1,0 +1,7 @@
+{
+    "name": "{{module.resourcePkg}}/{{module.name}}",
+    "version": "{{module.version}}",
+    "license": "MIT",
+    "dependencies": {}
+}
+

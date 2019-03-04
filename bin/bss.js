@@ -3,7 +3,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-01 08:51:20
- * @LastEditTime: 2019-03-02 12:57:49
+ * @LastEditTime: 2019-03-04 14:31:34
  */
 const commander = require('commander');
 const {init, ls, serve, install, update, publish} = require('./commands');
@@ -35,7 +35,9 @@ commander.command('ls')
    .action(ls);
 
 commander.command('serve')
-   .description('启动服务')
-   .action(serve);
+    .option('--ip [ip]', '自定义IP')
+    .option('--port [port]', '自定义端口', 4200)
+    .description('启动服务')
+    .action(serve);
 
 commander.parse( process.argv );

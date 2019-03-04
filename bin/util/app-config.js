@@ -5,9 +5,9 @@ const fnUtil = require('../util/file-name.util');
 let hendler = {
 
     /**
-     * 
-     * 
-     * @param {object} params 
+     *
+     *
+     * @param {object} params
      */
     getApplicationConfig: function() {
         return fss.readJSONSync(path.join(__dirname, '../../config/application.json'));
@@ -35,10 +35,14 @@ let hendler = {
         return fss.readJSONSync(path.join(__dirname, '../../config/application.json')).runtimePath;
     },
 
+    get curAppConf() {
+        
+    },
+
     /**
      * 获取应用配置信息
-     * 
-     * @param {object} params 
+     *
+     * @param {object} params
      */
     initApplicationConfig: function(params) {
         const appJson = fss.readJSONSync(params.sourceCodePath + '/application.json');

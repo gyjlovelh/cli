@@ -1,0 +1,4 @@
+/**
+ *  @description 导出 shared.module 模块
+ */
+export * from './src/shared.module';

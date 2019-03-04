@@ -1,4 +1,4 @@
 /**
  *  @description 导出 {{module.name}} 模块
  */
-export * from './{{module.filePrefix}}.module';
+export * from './modules/{{module.filePrefix}}.module';

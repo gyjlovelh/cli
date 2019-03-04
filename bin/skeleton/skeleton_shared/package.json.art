@@ -1,0 +1,6 @@
+{
+    "name": "{{module.sharedPkg}}/{{module.name}}",
+    "version": "{{module.version}}",
+    "license": "MIT",
+    "dependencies": {}
+}

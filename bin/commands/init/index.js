@@ -2,7 +2,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-26 17:37:34
- * @LastEditTime: 2019-03-04 20:04:43
+ * @LastEditTime: 2019-03-05 19:50:30
  */
 const inquirer = require('inquirer');
 const fss = require('fs-extra');
@@ -58,7 +58,12 @@ let handler = {
             appConfig.initApplicationConfig(inputs);
             log.info(identifier, '同步application.json');
 
-            // 2.记录应用骨架应用
+            // 2.生成common工程
+            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/module`);
+            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/component`);
+            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/service`);
+            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/resource`);
+            // fss.ensureDirSync()
 
             // 3.生成子应用工程
             appConfig.subs.forEach(sub => {
@@ -121,12 +126,33 @@ let handler = {
                         name: sub.name,
                         filePrefix:  sub.name,
                         camelName: fnUtil.anyToCamel(sub.name),
-                    }
+                    };
 
                     resolveFramework(
                         path.join(__dirname, '../../skeleton/runtime_app'),
                         `${appConfig.runtimePath}/${sub.name}/framework/src/app`,
                         appModule,
+                        {overwrite: true}
+                    );
+
+                    // 4.覆盖tsconfig.json
+                    let includeModule = [
+                        `@bss_modules/${sub.name}`,
+                        `@bss_shared/${sub.name}`,
+                        `@bss_resource/${sub.name}`,
+                    ];
+                    resolveFramework(
+                        path.join(__dirname, '../../skeleton/runtime_tsconfig'),
+                        `${appConfig.runtimePath}/${sub.name}/framework`,
+                        {include: includeModule},
+                        {overwrite: true}
+                    );
+
+                    // 5.覆盖index.html
+                    resolveFramework(
+                        path.join(__dirname, '../../skeleton/runtime_index'),
+                        `${appConfig.runtimePath}/${sub.name}/framework/src`,
+                        {name: sub.name},
                         {overwrite: true}
                     );
                 }

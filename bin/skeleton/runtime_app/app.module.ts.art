@@ -16,7 +16,7 @@ import { {{module.camelName}}Module } from '@bss_modules/{{module.name}}'
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        RouterModule,
+        RouterModule.forRoot([]),
         {{module.camelName}}Module
     ],
     providers: [],

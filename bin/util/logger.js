@@ -20,7 +20,7 @@ let handler = {
     },
     error: function(identifer, msg) {
         handler.segLine(msg).forEach(line => {
-            console.log(chalk.cyanBright.bold(identifer) + chalk.red('[ERROR] ') + chalk.white(line));
+            console.log(chalk.cyanBright.bold(identifer) + chalk.red('[ERROR] ') + chalk.redBright(line));
         });
     },
 

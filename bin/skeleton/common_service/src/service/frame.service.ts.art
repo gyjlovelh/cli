@@ -1,0 +1,12 @@
+import { Injectable } from '@angular/core';
+
+/**
+ * {{module.name}} 服务
+ * @export
+ */
+@Injectable()
+export class {{module.camelName}}Service {
+
+    constructor() {}
+
+}

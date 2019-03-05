@@ -1,0 +1,15 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+/**
+ * {{module.name}} 模块
+ * @export
+ */
+@NgModule({
+    imports: [
+        CommonModule
+    ],
+    declarations: [],
+    exports: []
+})
+export class {{module.camelName}}Module { }

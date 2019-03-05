@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { {{module.camelName}}RoutingModule } from './{{module.filePrefix}}.routing.module';
 import { {{module.camelName}}Component } from './{{module.filePrefix}}.component';
+import { {{module.camelName}}SharedModule } from '@bss_shared/${{module.name}}';
 
 /**
  * {{module.name}} 模块
@@ -10,6 +11,7 @@ import { {{module.camelName}}Component } from './{{module.filePrefix}}.component
 @NgModule({
     imports: [
         CommonModule,
+        {{module.camelName}}SharedModule,
         {{module.camelName}}RoutingModule
     ],
     declarations: [

@@ -2,7 +2,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-27 22:36:17
- * @LastEditTime: 2019-03-05 16:56:42
+ * @LastEditTime: 2019-03-06 15:45:22
  */
 
 const fss = require('fs-extra');
@@ -11,9 +11,9 @@ const cp = require('child_process');
 const log = require('../../util/logger');
 const appConfig = require('../../util/app-config');
 
-const identifier = '[启动] ';
+const identifier = '[serve] ';
 
-const systemType = require('os').type();;
+const systemType = require('os').type();
 
 let handler = {
     serve: function(arg) {
@@ -25,7 +25,8 @@ let handler = {
             arg.port && args.push('--port', arg.port);
 
             // runtime根目录
-            const targetPath = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework`;
+            let sc = appConfig.curSubConf();
+            let cwd = sc.runtimeDir;
 
             // 1.拷贝资源
             copyResource();
@@ -42,9 +43,9 @@ let handler = {
             let serv;
             if (systemType === 'Windows_NT') {
                 // 添加start会新开cmd窗口
-                serv = cp.spawn('start ng', args, {cwd: targetPath, shell: 'cmd.exe'});
+                serv = cp.spawn('start ng', args, {cwd: cwd, shell: 'cmd.exe'});
             } else {
-                serv = cp.spawn('ng', args, {cwd: targetPath});
+                serv = cp.spawn('ng', args, {cwd: cwd});
             }
 
             serv.stdout.on('data', data => log.info(identifier, data));
@@ -71,8 +72,7 @@ let handler = {
 
             function moduleListener() {
                 // 1-1.监听module工作目录文件
-                let listen_dir = `${appConfig.sourceCodePath}/${appConfig.selectedSub}/module`;
-                let $watch = chokidar.watch(listen_dir, {
+                let $watch = chokidar.watch(sc.moduleDir, {
                     ignored: /(^|[\/\\])\../,
                     persistent: true
                 });
@@ -80,8 +80,8 @@ let handler = {
                 $watch.on('change', path => {
                         // 兼容windows系统
                         path = path.replace(/\\/g, '/');
-                        let dest = path.split(`/${appConfig.selectedSub}/module/`)[1];
-                        let dest_path = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework/node_modules/@bss_modules/${appConfig.selectedSub}/${dest}`;
+                        let dest = path.split(`/${sc.name}/module/`)[1];
+                        let dest_path = `${sc.runtimeDir}/node_modules/${sc.modulePkg}}/${dest}`;
                         // 将变更文件复制到runtime环境
                         fss.copySync(path, dest_path, {overwrite: true});
                         log.info('[构建]',  '文件发生变化：' + path + ' -> ' + dest_path);
@@ -91,8 +91,7 @@ let handler = {
 
             function sharedListender() {
                 // 1-1.监听module工作目录文件
-                let listen_dir = `${appConfig.sourceCodePath}/${appConfig.selectedSub}/shared`;
-                let $watch = chokidar.watch(listen_dir, {
+                let $watch = chokidar.watch(sc.sharedDir, {
                     ignored: /(^|[\/\\])\../,
                     persistent: true
                 });
@@ -100,11 +99,11 @@ let handler = {
                 $watch.on('change', path => {
                     // 兼容windows系统
                     path = path.replace(/\\/g, '/');
-                    let dest = path.split(`/${appConfig.selectedSub}/shared/`)[1];
-                    let dest_path = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework/node_modules/@bss_shared/${appConfig.selectedSub}/${dest}`;
+                    let dest = path.split(`/${sc.name}/shared/`)[1];
+                    let dest_path = `${sc.runtimeDir}/node_modules/${sharedPkg}}/${dest}`;
                     // 将变更文件复制到runtime环境
                     fss.copySync(path, dest_path, {overwrite: true});
-                    log.info('[构建]',  '文件发生变化：' + path + ' -> ' + dest_path);
+                    log.info('[build]',  '文件发生变化：' + path + ' -> ' + dest_path);
                 }).on('error', error => log.error(identifier, error));
             }
         }
@@ -114,10 +113,10 @@ let handler = {
          */
         function copyResource() {
             // 清空资源目录
-            let dest = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework/src/assets`;
+            let dest = `${sc.runtimeDir}/src/assets`;
             fss.emptyDirSync(dest);
             // 将resource目录下的config拷贝过来
-            let target = `${appConfig.sourceCodePath}/${appConfig.selectedSub}/resource/config`;
+            let target = `${sc.resourceDir}/config`;
 
             // 拷贝config配置
             fss.copySync(target, `${dest}/config`);
@@ -131,13 +130,13 @@ let handler = {
         function importGlobalStyle() {
             let module = {
                 globalStyles: [
-                    `@bss_resource/${appConfig.selectedSub}`
+                    sc.resourcePkg
                 ]
             };
 
-            let dest = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework/src/style.scss`;
+            let dest = `${sc.runtimeDir}/src/style.scss`;
             let art = require('art-template');
-            const temp = art.render(fss.readFileSync(path.join(__dirname, '../../skeleton/runtime_style/style.scss.art')).toString(), {module});
+            const temp = art.render(fss.readFileSync(sc.runtimeStyleSkeleton).toString(), {module});
             fss.outputFileSync(dest, temp);
             log.info(identifier, '引入全局样式成功' + dest);
         }

@@ -1,34 +1,30 @@
 {
-    "name": "@hibiscus/cli",
+    "name": "@bss_cli/ng",
     "version": "1.0.0",
-    "description": "对angular/cli的二次封装",
-    "main": "index.js",
+    "description": "基于ng的脚手架工程，以快速开发为目的",
+    "main": "/bin/bss.js",
     "bin": {
         "bss": "./bin/bss.js"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
         "cli",
         "angular"
     ],
     "author": "guanyj",
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
         "art-template": "^4.13.2",
         "chalk": "^2.4.2",
         "commander": "^2.19.0",
-        "ejs": "^2.6.1",
         "fs-extra": "^7.0.1",
         "inquirer": "^6.2.2",
         "loglevel": "^1.6.1",
         "shelljs": "^0.8.3",
-        "yargs": "^13.2.1"
+        "yargs": "^13.2.1",
+        "chokidar": "^2.1.2"
     },
     "devDependencies": {
         "@types/chalk": "^2.2.0",
-        "@types/fs-extra": "^5.0.5",
-        "chokidar": "^2.1.2"
+        "@types/fs-extra": "^5.0.5"
     }
 }

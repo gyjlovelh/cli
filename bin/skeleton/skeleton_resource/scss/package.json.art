@@ -1,5 +1,5 @@
 {
-    "name": "{{module.resourcePkg}}/{{module.name}}",
+    "name": "{{module.resourcePkg}}",
     "version": "{{module.version}}",
     "license": "MIT",
     "dependencies": {}

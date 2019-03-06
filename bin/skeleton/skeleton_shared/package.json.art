@@ -1,5 +1,5 @@
 {
-    "name": "{{module.sharedPkg}}/{{module.name}}",
+    "name": "{{module.sharedPkg}}",
     "version": "{{module.version}}",
     "license": "MIT",
     "dependencies": {}

@@ -2,7 +2,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-27 21:54:41
- * @LastEditTime: 2019-03-02 15:22:01
+ * @LastEditTime: 2019-03-06 15:22:44
  */
 const fss = require('fs-extra');
 const inquirer = require('inquirer');
@@ -25,17 +25,6 @@ function ls() {
     }]).then(({subName}) => {
         appConfig.selectedSub = subName;
 
-        const targetPath = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework`;
-        fss.ensureDirSync(targetPath)
-        
-        let pkg = fss.readJSONSync(`${targetPath}/package.json`);
-       
-        // if (!pkg.dependencies.hasOwnProperty(`@bss-modules/${appConfig.selectedSub}`)) {
-        //     pkg.dependencies[`@bss-modules/${appConfig.selectedSub}`] = '~1.0.0';
-        // }
-    
-        
-        fss.outputJSONSync(`${targetPath}/package.json`, pkg, {spaces: 4});
         log.info(identifier, '切换应用' + appConfig.selectedSub);
     });
 }

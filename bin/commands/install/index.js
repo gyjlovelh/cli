@@ -10,31 +10,33 @@ const identifier = '[安装] ';
 
 function install() {
     try {
-        let targetPath = `${appConfig.runtimePath}/${appConfig.selectedSub}/framework`;
-        let pkg = fss.readJSONSync(`${targetPath}/package.json`);
+        let appInfo = appConfig.getAppConf();
+        let sc = appConfig.curSubConf;
+        let pkg = fss.readJSONSync(`${sc.runtimeDir}/package.json`);
 
+        // 修正rxjs版本
         pkg.dependencies.rxjs = '6.0.0';
 
         let bssPkgs = Object.keys(pkg.dependencies)
-            .filter(key => key.includes('@bss'))
+            .filter(key => key.includes(`@${sc.production}`))
             .map(key => `${key}@latest`).join(' ');
 
         let selfDep = Object.keys(pkg.dependencies)
-            .filter(key => !key.includes('@bss'))
+            .filter(key => !key.includes(`@${sc.production}`))
             .map(key => `${key}@${pkg.dependencies[key]}`).join(' ');
 
         let devDep = Object.keys(pkg.devDependencies)
             .map(key => `${key}@${pkg.devDependencies[key]}`).join(' ');
 
         // 指定node-sass的下载源
-        log.info(identifier, cp.execSync('npm config set sass-binary-site http://npm.taobao.org/mirrors/node-sass'));
+        log.info(identifier, cp.execSync(`npm config set sass-binary-site http://npm.taobao.org/mirrors/node-sass`));
 
         // 安装BSS平台依赖
-        log.info(identifier, cp.execSync(`npm install ${bssPkgs} --save --registry http://0.0.0.0:4873`, {cwd: targetPath}));
+        log.info(identifier, cp.execSync(`npm install ${bssPkgs} --save --registry ${appInfo.privateRegistry}`, {cwd: sc.runtimeDir}));
 
-        log.info(identifier, cp.execSync(`npm install ${selfDep} --save --registry http://registry.npm.taobao.org`, {cwd: targetPath}));
+        log.info(identifier, cp.execSync(`npm install ${selfDep} --save --registry ${appInfo.registry}`, {cwd: sc.runtimeDir}));
 
-        log.info(identifier, cp.execSync(`npm install ${devDep} --save-dev --registry http://registry.npm.taobao.org`, {cwd: targetPath}));
+        log.info(identifier, cp.execSync(`npm install ${devDep} --save-dev --registry ${appInfo.registry}`, {cwd: sc.runtimeDir}));
 
     } catch (err) {
         throw new Error(err);

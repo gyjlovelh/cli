@@ -2,7 +2,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-26 17:37:34
- * @LastEditTime: 2019-03-05 19:50:30
+ * @LastEditTime: 2019-03-06 16:00:11
  */
 const inquirer = require('inquirer');
 const fss = require('fs-extra');
@@ -59,103 +59,104 @@ let handler = {
             log.info(identifier, '同步application.json');
 
             // 2.生成common工程
-            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/module`);
-            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/component`);
-            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/service`);
-            fss.ensureDirSync(`${appConfig.sourceCodePath}/common/resource`);
-            // fss.ensureDirSync()
+            let commonConf = appConfig.getSubConf('common');
+            fss.ensureDirSync(commonConf.moduleDir);
+            fss.ensureDirSync(commonConf.componentDir);
+            fss.ensureDirSync(commonConf.serviceDir);
+            fss.ensureDirSync(commonConf.resourceDir);
 
             // 3.生成子应用工程
             appConfig.subs.forEach(sub => {
+                let sc = appConfig.getSubConf(sub.name);
                 // 模板配置信息
                 let module = {
                     name: sub.name,
                     filePrefix:  sub.name,
                     camelName: fnUtil.anyToCamel(sub.name),
-                    pkg: '@bss_modules',
-                    sharedPkg: '@bss_shared',
-                    resourcePkg: "@bss_resource",
+                    pkg: sc.modulePkg,
+                    sharedPkg: sc.sharedPkg,
+                    resourcePkg: sc.resourcePkg,
                     version: '1.0.0',
-                    rulesDirectory: `${appConfig.runtimePath}/${sub.name}/framework/node_modules/codelyzer`,
-                    baseUrl: `${appConfig.runtimePath}/${sub.name}/framework/node_modules`
+                    rulesDirectory: `${sc.runtimeDir}/node_modules/codelyzer`,
+                    baseUrl: `${sc.runtimeDir}/node_modules`
                 };
-                // 生成源码骨架
-                ['module', 'shared', 'resource'].forEach(dir => {
-                    // 模板文件位置
-                    let temp_dir = path.join(__dirname, `../../skeleton/skeleton_${dir}`);
-                    // 目标位置
-                    let dest_dir = `${appConfig.sourceCodePath}/${sub.name}/${dir}`;
-                    resolveFramework(temp_dir, dest_dir, module);
-                });
+
+                // 3.1 生成子应用module工程
+                resolveFramework(sc.moduleSkeleton, sc.moduleDir, module);
+
+                // 3.1 生成子应用shared工程
+                resolveFramework(sc.sharedSkeleton, sc.sharedDir, module);
+
+                // 3.1 生成子应用resource工程
+                resolveFramework(sc.resourceSkeleton, sc.resourceDir, module);
+
             });
 
             // 4.生成运行环境骨架
             appConfig.subs.forEach(sub => {
-                let rt_dir = `${appConfig.runtimePath}/${sub.name}`;
-                fss.ensureDirSync(rt_dir);
+                let sc = appConfig.getSubConf(sub.name);
+                fss.ensureDirSync(sc.runtimeDir);
 
                 // 首次创建运行环境骨架
-                if (!fss.existsSync(`${rt_dir}/framework/package.json`)) {
-                    log.info(identifier, cp.execSync(`ng new framework --skip-install --style=scss --skip-tests --prefix bss`, {cwd: rt_dir}));
+                if (!fss.existsSync(`${sc.runtimeDir}/package.json`)) {
+                    log.info(identifier, cp.execSync(`ng new framework --skip-install --style=scss --skip-tests --prefix ${sc.production}`, {cwd: sc.runtimeRootDir}));
                 }
 
                 //
-                const pkg = fss.readJSONSync(`${rt_dir}/framework/package.json`);
+                const pkg = fss.readJSONSync(`${sc.runtimeDir}/package.json`);
                 // 写入公共依赖
+                 // todo
+                // pkg.dependencies[`@bss_common_components/xxx`] = `~1.0.0`;
+                // pkg.dependencies[`@bss_common_modules/xxx`] = `~1.0.0`;
+                // pkg.dependencies[`@bss_common_services/xxx`] = `~1.0.0`;
+                // pkg.dependencies[`@bss_common_resource/xxx`] = `~1.0.0`;
 
                 // 写入子应用模块
-                if (!pkg.dependencies.hasOwnProperty(`@bss-modules/${sub.name}`)) {
-                    // todo
-                    // pkg.dependencies[`@bss_common_components/xxx`] = `~1.0.0`;
-                    // pkg.dependencies[`@bss_common_modules/xxx`] = `~1.0.0`;
-                    // pkg.dependencies[`@bss_common_services/xxx`] = `~1.0.0`;
-                    // pkg.dependencies[`@bss_common_resource/xxx`] = `~1.0.0`;
+                pkg.dependencies[sc.modulePkg] = '~1.0.0';
+                pkg.dependencies[sc.sharedPkg] = '~1.0.0';
+                pkg.dependencies[sc.resourcePkg] = '~1.0.0';
 
-                    // 修正 rxjs@6.4.0 无法正常启动BUG
-                    pkg.dependencies.rxjs = `^6.0.0`;
+                // 修正 rxjs@6.4.0 无法正常启动BUG
+                pkg.dependencies.rxjs = `^6.0.0`;
 
-                    // 下载
-                    pkg.dependencies[`@bss_modules/${sub.name}`] = '~1.0.0';
-                    pkg.dependencies[`@bss_shared/${sub.name}`] = '~1.0.0';
-                    pkg.dependencies[`@bss_resource/${sub.name}`] = '~1.0.0';
-                    fss.outputJSONSync(`${rt_dir}/framework/package.json`, pkg, {spaces: 4});
-                    log.info(identifier, '[修改文件] ' + `${rt_dir}/framework/package.json`);
+                fss.outputJSONSync(`${sc.runtimeDir}/package.json`, pkg, {spaces: 4});
+                log.info(identifier, '[修改文件] ' + `${sc.runtimeDir}/package.json`);
 
-                    // 3.渲染 /src/app 模板文件
-                    let appModule = {
-                        name: sub.name,
-                        filePrefix:  sub.name,
-                        camelName: fnUtil.anyToCamel(sub.name),
-                    };
+                // 3.渲染 /src/app 模板文件
+                let appModule = {
+                    name: sub.name,
+                    filePrefix:  sub.name,
+                    camelName: fnUtil.anyToCamel(sub.name),
+                };
 
-                    resolveFramework(
-                        path.join(__dirname, '../../skeleton/runtime_app'),
-                        `${appConfig.runtimePath}/${sub.name}/framework/src/app`,
-                        appModule,
-                        {overwrite: true}
-                    );
+                resolveFramework(
+                    sc.runtimeAppSkeleton,
+                    `${sc.runtimeDir}/src/app`,
+                    appModule,
+                    {overwrite: true}
+                );
 
-                    // 4.覆盖tsconfig.json
-                    let includeModule = [
-                        `@bss_modules/${sub.name}`,
-                        `@bss_shared/${sub.name}`,
-                        `@bss_resource/${sub.name}`,
-                    ];
-                    resolveFramework(
-                        path.join(__dirname, '../../skeleton/runtime_tsconfig'),
-                        `${appConfig.runtimePath}/${sub.name}/framework`,
-                        {include: includeModule},
-                        {overwrite: true}
-                    );
+                // 4.覆盖tsconfig.json
+                let includeModule = [
+                    sc.modulePkg,
+                    sc.sharedPkg,
+                    sc.resourcePkg,
+                ];
+                resolveFramework(
+                    sc.runtimeTsconfigSkeleton,
+                    sc.runtimeDir,
+                    {include: includeModule},
+                    {overwrite: true}
+                );
 
-                    // 5.覆盖index.html
-                    resolveFramework(
-                        path.join(__dirname, '../../skeleton/runtime_index'),
-                        `${appConfig.runtimePath}/${sub.name}/framework/src`,
-                        {name: sub.name},
-                        {overwrite: true}
-                    );
-                }
+                // 5.覆盖index.html
+                resolveFramework(
+                    sc.runtimeIndexSkeleton,
+                    `${sc.runtimeDir}/src`,
+                    {name: sub.name},
+                    {overwrite: true}
+                );
+
             });
 
         }

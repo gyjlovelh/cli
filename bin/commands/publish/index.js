@@ -1,5 +1,7 @@
-const appConfig = require('../../util/app-config');
+'use strict';
+
 const fss = require('fs-extra');
+const func = require('../../util/func');
 const cp = require('child_process');
 const log = require('../../util/logger');
 
@@ -8,10 +10,11 @@ const identifier = '[publish] ';
 let handler = {
 
     publish: function() {
+        let sc = func.getCurSubConf();
+        let appInfo = func.getAppConf();
         try {
-            let sc = appConfig.curSubConf();
-            cp.execSync(`npm config set scope=${sc.production}`);
-            cp.execSync(`npm config set registry ${sc.privateRegistry}`);
+            cp.execSync(`npm config set scope=${appInfo.production}`);
+            cp.execSync(`npm config set registry=${appInfo.privateRegistry}`);
 
             /** 1.发布子应用模块 */
             publishSubModule();
@@ -22,7 +25,7 @@ let handler = {
             /** 3.发布子应用资源模块 */
             publishSubResource();
 
-            cp.execSync(`npm config set registry ${sc.registry}`);
+            cp.execSync(`npm config set registry=${appInfo.registry}`);
         } catch (err) {
             throw new Error(err);
         }
@@ -31,7 +34,8 @@ let handler = {
             let pkg = fss.readJSONSync(`${sc.moduleDir}/package.json`);
             let version;
             try {
-                version = cp.execSync(`npm view ${sc.modulePkg} version`).toString();
+                version = cp.execSync(`npm view ${sc.modulePkg} version`);
+                version = version.toString();
                 pkg.version = version;
                 fss.outputJSONSync(`${sc.moduleDir}/package.json`, pkg, {spaces: 4});
                 cp.execSync('npm version patch', {cwd: sc.moduleDir});

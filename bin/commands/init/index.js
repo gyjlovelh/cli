@@ -2,13 +2,15 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-26 17:37:34
- * @LastEditTime: 2019-03-06 16:00:11
+ * @LastEditTime: 2019-03-06 17:04:07
  */
+
 const inquirer = require('inquirer');
 const fss = require('fs-extra');
 const os = require('os');
 const log = require('../../util/logger');
 const appConfig = require('../../util/app-config');
+const func = require('../../util/func');
 const art = require('art-template');
 const path = require('path');
 const fnUtil = require('../../util/file-name.util');
@@ -33,8 +35,7 @@ let handler = {
                 message: '请输入产品工作空间路径',
                 name: 'sourceCodePath',
                 default: defaultSourceCodePath
-            }
-        ];
+            }];
             inquirer.prompt(steps).then(handleInit);
         } catch (err) {
             throw new Error(err);
@@ -59,15 +60,15 @@ let handler = {
             log.info(identifier, '同步application.json');
 
             // 2.生成common工程
-            let commonConf = appConfig.getSubConf('common');
+            let commonConf = func.getSubConf('common');
             fss.ensureDirSync(commonConf.moduleDir);
             fss.ensureDirSync(commonConf.componentDir);
             fss.ensureDirSync(commonConf.serviceDir);
             fss.ensureDirSync(commonConf.resourceDir);
 
             // 3.生成子应用工程
-            appConfig.subs.forEach(sub => {
-                let sc = appConfig.getSubConf(sub.name);
+            func.getAppConf().subs.forEach(sub => {
+                let sc = func.getSubConf(sub.name);
                 // 模板配置信息
                 let module = {
                     name: sub.name,
@@ -93,8 +94,8 @@ let handler = {
             });
 
             // 4.生成运行环境骨架
-            appConfig.subs.forEach(sub => {
-                let sc = appConfig.getSubConf(sub.name);
+            func.getAppConf().subs.forEach(sub => {
+                let sc = func.getSubConf(sub.name);
                 fss.ensureDirSync(sc.runtimeDir);
 
                 // 首次创建运行环境骨架

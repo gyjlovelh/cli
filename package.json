@@ -15,16 +15,18 @@
     "dependencies": {
         "art-template": "^4.13.2",
         "chalk": "^2.4.2",
+        "chokidar": "^2.1.2",
         "commander": "^2.19.0",
         "fs-extra": "^7.0.1",
         "inquirer": "^6.2.2",
         "loglevel": "^1.6.1",
+        "node-xlsx": "^0.14.1",
         "shelljs": "^0.8.3",
-        "yargs": "^13.2.1",
-        "chokidar": "^2.1.2"
+        "yargs": "^13.2.1"
     },
     "devDependencies": {
         "@types/chalk": "^2.2.0",
-        "@types/fs-extra": "^5.0.5"
+        "@types/fs-extra": "^5.0.5",
+        "jshint": "^2.10.1"
     }
 }

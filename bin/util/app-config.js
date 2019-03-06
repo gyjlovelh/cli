@@ -1,5 +1,8 @@
+'use strict';
+
 const fss = require('fs-extra');
 const path = require('path');
+const log = require('./logger');
 const fnUtil = require('../util/file-name.util');
 
 let hendler = {
@@ -11,53 +14,20 @@ let hendler = {
     apps: new Map(),
 
     /**
-     *
-     *
-     * @param {object} params
+     * 获取应用信息
      */
     getApplicationConfig: function() {
-        return fss.readJSONSync(path.join(__dirname, '../../config/application.json'));
-    },
+        if (Object.keys(this.bss).length === 0) {
+            log.info('[app] ', '读取application.json文件.');
+            let appJson = fss.readJSONSync(path.join(__dirname, '../../config/application.json'));
 
-    getAppConf() {
-        return this.bss;
-    },
+            this.initAppConf(appJson);
 
-    get subs() {
-        return this.bss.subs;
-    },
+            this.initCommonConfig(appJson);
 
-    set selectedSub(subName) {
-        let config = this.getApplicationConfig();
-        config.selectedSub = subName;
-        this.bss.selectedSub = subName;
-        fss.outputJSONSync(path.join(__dirname, '../../config/application.json'), config, {spaces: 4});
-    },
-
-    get selectedSub() {
-        return this.bss.selectedSub;
-    },
-
-    /**
-     * @deprecated
-     */
-    get sourceCodePath() {
-        return fss.readJSONSync(path.join(__dirname, '../../config/application.json')).sourceCodePath;
-    },
-
-    /**
-     * @deprecated
-     */
-    get runtimePath() {
-        return fss.readJSONSync(path.join(__dirname, '../../config/application.json')).runtimePath;
-    },
-
-    get curSubConf() {
-        return this.apps.get(this.selectedSub());
-    },
-
-    getSubConf(name) {
-        return this.apps.get(name);
+            this.initSubsConfig(appJson);
+        }
+        return {bss: this.bss, apps: this.apps};
     },
 
     /**
@@ -76,37 +46,60 @@ let hendler = {
                 mod.name = fnUtil.camelToLetter( fnUtil.anyToCamel(mod.name) );
                 return mod;
             });
-            // 配置子应用信息
-            hendler.apps.set(sub.name, getSubConfig(sub));
             return sub;
         });
-        // common工程配置
-        this.apps.set('common', getCommonConfig());
-        // 初始化工程信息
-        this.bss = initAppConf();
-        this.bss.subs = appJson.subs;
-        // 初始化选中为第一个子应用
-        this.bss.selectedSub = appJson.selectedSub = appJson.subs && appJson.subs[0].name;
+
+        appJson.selectedSub = appJson.subs[0].name;
+
         fss.outputJsonSync(path.join(__dirname, '../../config/application.json'), appJson, {spaces: 4});
 
-        function initAppConf() {
-            // 设置私服
-            return {
-                name: appJson.name,
-                production: appJson.production,
-                version: appJson.version,
+    },
 
-                codeRootDir: appJson.sourceCodePath,
-                runtimeRootDir: appJson.runtimePath,
-                distRootDir: appJson.distPath,
+    initAppConf: function(appJson) {
+        // 设置私服
+        this.bss = {
+            name: appJson.name,
+            production: appJson.production,
+            version: appJson.version,
+            selectedSub: appJson.selectedSub,
+            subs: appJson.subs,
+            codeRootDir: appJson.sourceCodePath,
+            runtimeRootDir: appJson.runtimePath,
+            distRootDir: appJson.distPath,
 
-                privteRegistry: 'http://0.0.0.0:4873',
-                registry: 'http://registry.npm.taobao.org',
-            };
-        }
+            privateRegistry: 'http://0.0.0.0:4873',
+            registry: 'http://registry.npm.taobao.org',
+        };
+    },
 
-        function getSubConfig(sub) {
+    initCommonConfig: function(appJson) {
+        let root = `${appJson.sourceCodePath}/common`;
+        let common = {
+            name: 'common',
 
+            // 发布包配置
+            componentPkgPrefix: `@${appJson.production}_common_component`,
+            modulePkgPrefix: `@${appJson.production}_common_module`,
+            servicePkgPrefix: `@${appJson.production}_common_service`,
+            resourcePkgPrefix: `@${appJson.production}_common_resource`,
+
+            // 本地库
+            codeRootDir: root,
+            moduleDir: `${root}/module`,
+            componentDir: `${root}/component`,
+            serviceDir: `${root}/service`,
+            resourceDir: `${root}/resource`
+        };
+        this.apps.set('common', common);
+    },
+
+    initSubsConfig: function(appJson) {
+
+        appJson.subs.forEach(sub => {
+            this.apps.set(sub.name, getSubConf(sub));
+        });
+
+        function getSubConf(sub) {
             return {
                 name: sub.name,
                 camelName: fnUtil.anyToCamel(sub.name),
@@ -138,36 +131,10 @@ let hendler = {
                 runtimeStyleSkeleton: path.join(__dirname, '../skeleton/runtime_style'),
                 // 归档配置
                 distDir: `${appJson.distPath}/${sub.name}`
-
-                // defaultTheme
-
-
-            };
-        }
-
-        function getCommonConfig() {
-            let root = `${appJson.sourceCodePath}/common`;
-            return {
-                name: 'common',
-
-                // 发布包配置
-                componentPkgPrefix: `@${appJson.name}_common_component`,
-                modulePkgPrefix: `@${appJson.name}_common_module`,
-                servicePkgPrefix: `@${appJson.name}_common_service`,
-                resourcePkgPrefix: `@${appJson.name}_common_resource`,
-
-                // 本地库
-                codeRootDir: root,
-                moduleDir: `${root}/module`,
-                componentDir: `${root}/component`,
-                serviceDir: `${root}/service`,
-                resourceDir: `${root}/resource`
             };
         }
     }
 
 };
-
-
 
 module.exports = hendler;

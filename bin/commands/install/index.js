@@ -1,17 +1,18 @@
+"use strict";
 
 const fss = require('fs-extra');
 const path = require('path');
+const func = require('../../util/func');
 const cp = require('child_process');
 
 const log = require('../../util/logger');
-const appConfig = require('../../util/app-config');
 
-const identifier = '[安装] ';
+const identifier = '[install] ';
 
 function install() {
     try {
-        let appInfo = appConfig.getAppConf();
-        let sc = appConfig.curSubConf;
+        let appInfo = func.getAppConf();
+        let sc = func.getCurSubConf();
         let pkg = fss.readJSONSync(`${sc.runtimeDir}/package.json`);
 
         // 修正rxjs版本

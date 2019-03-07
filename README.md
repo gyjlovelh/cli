@@ -114,3 +114,12 @@ D:\sourceCode\cli\cli>bss serve
 ##### 开发目录结构
 
 ![dir_st](./bin/dir_st.png)
+
+
+
+##### 快速生成模板文件 [进行中...]
+
+```shell
+bss create <template> 
+```
+

@@ -1,7 +1,7 @@
 {
-    "name": "@bss_cli/ng",
-    "version": "1.0.0",
-    "description": "基于ng的脚手架工程，以快速开发为目的",
+    "name": "@hibiscus/cli",
+    "version": "1.0.3",
+    "description": "@hibiscus/cli 是基于angular6 + ng-zorro开发的一个快速开发平台。提供前端架构模板以及通用业务代码快捷生成方式；",
     "main": "/bin/bss.js",
     "bin": {
         "bss": "./bin/bss.js"
@@ -12,6 +12,10 @@
     ],
     "author": "guanyj",
     "license": "MIT",
+    "repository": {
+        "url": "https://github.com/gyjlovelh/cli"
+    },
+    "private": false,
     "dependencies": {
         "art-template": "^4.13.2",
         "chalk": "^2.4.2",

@@ -113,4 +113,4 @@ D:\sourceCode\cli\cli>bss serve
 
 ##### 开发目录结构
 
-![dir_st](C:\Users\Administrator\Desktop\dir_st.png)
+![dir_st](./bin/dir_st.png)

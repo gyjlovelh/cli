@@ -2,21 +2,26 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-27 22:36:17
- * @LastEditTime: 2019-03-06 15:45:22
+ * @LastEditTime: 2019-03-07 12:38:04
  */
 
 const fss = require('fs-extra');
 const path = require('path');
 const cp = require('child_process');
 const log = require('../../util/logger');
-const appConfig = require('../../util/app-config');
+const func = require('../../util/func');
+const skeleton = require('../../skeleton/skeleton');
+// const appConfig = require('../../util/app-config');
 
 const identifier = '[serve] ';
 
 const systemType = require('os').type();
 
 let handler = {
-    serve: function(arg) {
+    serve: function (arg) {
+        // runtime根目录
+        let sc = func.getCurSubConf();
+        let cwd = sc.runtimeDir;
         try {
             let args = ['serve'];
             // 自定义host
@@ -24,9 +29,7 @@ let handler = {
             // 自定义端口
             arg.port && args.push('--port', arg.port);
 
-            // runtime根目录
-            let sc = appConfig.curSubConf();
-            let cwd = sc.runtimeDir;
+
 
             // 1.拷贝资源
             copyResource();
@@ -43,9 +46,14 @@ let handler = {
             let serv;
             if (systemType === 'Windows_NT') {
                 // 添加start会新开cmd窗口
-                serv = cp.spawn('start ng', args, {cwd: cwd, shell: 'cmd.exe'});
+                serv = cp.spawn('start ng', args, {
+                    cwd: cwd,
+                    shell: 'cmd.exe'
+                });
             } else {
-                serv = cp.spawn('ng', args, {cwd: cwd});
+                serv = cp.spawn('ng', args, {
+                    cwd: cwd
+                });
             }
 
             serv.stdout.on('data', data => log.info(identifier, data));
@@ -83,8 +91,10 @@ let handler = {
                         let dest = path.split(`/${sc.name}/module/`)[1];
                         let dest_path = `${sc.runtimeDir}/node_modules/${sc.modulePkg}}/${dest}`;
                         // 将变更文件复制到runtime环境
-                        fss.copySync(path, dest_path, {overwrite: true});
-                        log.info('[构建]',  '文件发生变化：' + path + ' -> ' + dest_path);
+                        fss.copySync(path, dest_path, {
+                            overwrite: true
+                        });
+                        log.info('[构建]', '文件发生变化：' + path + ' -> ' + dest_path);
                     })
                     .on('error', error => log.error(identifier, error));
             }
@@ -102,8 +112,10 @@ let handler = {
                     let dest = path.split(`/${sc.name}/shared/`)[1];
                     let dest_path = `${sc.runtimeDir}/node_modules/${sharedPkg}}/${dest}`;
                     // 将变更文件复制到runtime环境
-                    fss.copySync(path, dest_path, {overwrite: true});
-                    log.info('[build]',  '文件发生变化：' + path + ' -> ' + dest_path);
+                    fss.copySync(path, dest_path, {
+                        overwrite: true
+                    });
+                    log.info('[build]', '文件发生变化：' + path + ' -> ' + dest_path);
                 }).on('error', error => log.error(identifier, error));
             }
         }
@@ -133,16 +145,16 @@ let handler = {
                     sc.resourcePkg
                 ]
             };
-
-            let dest = `${sc.runtimeDir}/src/style.scss`;
-            let art = require('art-template');
-            const temp = art.render(fss.readFileSync(sc.runtimeStyleSkeleton).toString(), {module});
-            fss.outputFileSync(dest, temp);
-            log.info(identifier, '引入全局样式成功' + dest);
+            skeleton.resolveFramework(
+                path.join(__dirname, '../../skeleton/runtime_style'),
+                `${sc.runtimeDir}/src`,
+                module,
+                {overwrite: true}
+            );
+            log.info(identifier, '引入全局样式成功' +  `${sc.runtimeDir}/src`);
         }
     }
 };
 
 
 module.exports = handler;
-

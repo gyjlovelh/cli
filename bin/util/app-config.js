@@ -67,8 +67,8 @@ let hendler = {
             runtimeRootDir: appJson.runtimePath,
             distRootDir: appJson.distPath,
 
-            privateRegistry: 'http://0.0.0.0:4873',
-            registry: 'http://registry.npm.taobao.org',
+            // privateRegistry: 'http://0.0.0.0:4873',
+            // registry: 'http://registry.npm.taobao.org',
         };
     },
 
@@ -103,8 +103,11 @@ let hendler = {
             return {
                 name: sub.name,
                 camelName: fnUtil.anyToCamel(sub.name),
+                filePrefix: sub.name,
                 production: appJson.production,
                 version: sub.version,
+                rulesDirectory: `${appJson.runtimePath}/${sub.name}/framework/node_modules/codelyzer`,
+                baseUrl: `${appJson.runtimePath}/${sub.name}/framework/node_modules`,
 
                 // 骨架模板文件配置
                 moduleSkeleton: path.join(__dirname, '../skeleton/skeleton_module'),
@@ -128,7 +131,7 @@ let hendler = {
                 runtimeAppSkeleton: path.join(__dirname, '../skeleton/runtime_app'),
                 runtimeTsconfigSkeleton: path.join(__dirname, '../skeleton/runtime_tsconfig'),
                 runtimeIndexSkeleton: path.join(__dirname, '../skeleton/runtime_index'),
-                runtimeStyleSkeleton: path.join(__dirname, '../skeleton/runtime_style'),
+                runtimeStyleSkeleton: path.join(__dirname, '../skeleton/runtime_style/style.scss.art'),
                 // 归档配置
                 distDir: `${appJson.distPath}/${sub.name}`
             };

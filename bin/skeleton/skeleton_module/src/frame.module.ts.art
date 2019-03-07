@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { {{module.camelName}}RoutingModule } from './{{module.filePrefix}}.routing.module';
 import { {{module.camelName}}Component } from './{{module.filePrefix}}.component';
-import { {{module.camelName}}SharedModule } from '@bss_shared/${{module.name}}';
+import { {{module.camelName}}SharedModule } from '{{module.sharedPkg}}';
 
 /**
  * {{module.name}} 模块

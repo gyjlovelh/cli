@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 
-import { {{module.camelName}}Module } from '@bss_modules/{{module.name}}'
+import { {{module.camelName}}Module } from '{{module.modulePkg}}'
 
 @NgModule({
     declarations: [

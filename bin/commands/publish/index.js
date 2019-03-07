@@ -14,7 +14,7 @@ let handler = {
         let appInfo = func.getAppConf();
         try {
             cp.execSync(`npm config set scope=${appInfo.production}`);
-            cp.execSync(`npm config set registry=${appInfo.privateRegistry}`);
+            // cp.execSync(`npm config set registry=${appInfo.privateRegistry}`);
 
             /** 1.发布子应用模块 */
             publishSubModule();
@@ -25,7 +25,7 @@ let handler = {
             /** 3.发布子应用资源模块 */
             publishSubResource();
 
-            cp.execSync(`npm config set registry=${appInfo.registry}`);
+            // cp.execSync(`npm config set registry=${appInfo.registry}`);
         } catch (err) {
             throw new Error(err);
         }

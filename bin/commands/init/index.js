@@ -2,8 +2,9 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-26 17:37:34
- * @LastEditTime: 2019-03-06 17:04:07
+ * @LastEditTime: 2019-03-07 13:40:55
  */
+'use strict';
 
 const inquirer = require('inquirer');
 const fss = require('fs-extra');
@@ -13,6 +14,7 @@ const appConfig = require('../../util/app-config');
 const func = require('../../util/func');
 const art = require('art-template');
 const path = require('path');
+const skeleton = require('../../skeleton/skeleton');
 const fnUtil = require('../../util/file-name.util');
 const cp = require('child_process');
 
@@ -70,26 +72,15 @@ let handler = {
             func.getAppConf().subs.forEach(sub => {
                 let sc = func.getSubConf(sub.name);
                 // 模板配置信息
-                let module = {
-                    name: sub.name,
-                    filePrefix:  sub.name,
-                    camelName: fnUtil.anyToCamel(sub.name),
-                    pkg: sc.modulePkg,
-                    sharedPkg: sc.sharedPkg,
-                    resourcePkg: sc.resourcePkg,
-                    version: '1.0.0',
-                    rulesDirectory: `${sc.runtimeDir}/node_modules/codelyzer`,
-                    baseUrl: `${sc.runtimeDir}/node_modules`
-                };
 
                 // 3.1 生成子应用module工程
-                resolveFramework(sc.moduleSkeleton, sc.moduleDir, module);
+                skeleton.resolveFramework(sc.moduleSkeleton, sc.moduleDir, sc);
 
                 // 3.1 生成子应用shared工程
-                resolveFramework(sc.sharedSkeleton, sc.sharedDir, module);
+                skeleton.resolveFramework(sc.sharedSkeleton, sc.sharedDir, sc);
 
                 // 3.1 生成子应用resource工程
-                resolveFramework(sc.resourceSkeleton, sc.resourceDir, module);
+                skeleton.resolveFramework(sc.resourceSkeleton, sc.resourceDir, sc);
 
             });
 
@@ -124,16 +115,13 @@ let handler = {
                 log.info(identifier, '[修改文件] ' + `${sc.runtimeDir}/package.json`);
 
                 // 3.渲染 /src/app 模板文件
-                let appModule = {
-                    name: sub.name,
-                    filePrefix:  sub.name,
-                    camelName: fnUtil.anyToCamel(sub.name),
-                };
+                let subModule = func.getSubConf(sub.name);
+                sub.filePrefix = sub.name;
 
-                resolveFramework(
+                skeleton.resolveFramework(
                     sc.runtimeAppSkeleton,
                     `${sc.runtimeDir}/src/app`,
-                    appModule,
+                    subModule,
                     {overwrite: true}
                 );
 
@@ -143,7 +131,7 @@ let handler = {
                     sc.sharedPkg,
                     sc.resourcePkg,
                 ];
-                resolveFramework(
+                skeleton.resolveFramework(
                     sc.runtimeTsconfigSkeleton,
                     sc.runtimeDir,
                     {include: includeModule},
@@ -151,7 +139,7 @@ let handler = {
                 );
 
                 // 5.覆盖index.html
-                resolveFramework(
+                skeleton.resolveFramework(
                     sc.runtimeIndexSkeleton,
                     `${sc.runtimeDir}/src`,
                     {name: sub.name},
@@ -160,40 +148,6 @@ let handler = {
 
             });
 
-        }
-
-        /**
-         * 遍历模板目录生成模板文件
-         *
-         * @param {string} dir 模板路径
-         * @param {string} dest 目标路径
-         * @param {object} module 模板参数
-         * @param {object} options 配置
-         */
-        function resolveFramework(dir, dest, module, options) {
-            options = options || {};
-            // 模板目录下所有文件
-            const files = fss.readdirSync(dir);
-            files.forEach(filename => {
-                // 模板文件路径
-                let fileRealPath = path.join(dir, filename);
-                const stat = fss.statSync(fileRealPath);
-                if (stat.isFile()) {
-                    const template = art.render(fss.readFileSync(fileRealPath).toString(), {module});
-                    // 目标文件名
-                    let targetName = filename.replace(/frame/g, module.name).replace(/\.art$/g, '');
-                    // 目标文件地址
-                    let targetPath = `${dest}/${targetName}`;
-                    if (!fss.existsSync(targetPath) || options.overwrite) {
-                        fss.outputFileSync(targetPath, template);
-                        let str = options.overwrite ? '覆盖文件' : '创建文件';
-                        log.info(identifier, str + targetPath);
-                    }
-                } else {
-                    fss.ensureDirSync(dest);
-                    resolveFramework(fileRealPath, `${dest}/${filename}`, module);
-                }
-            });
         }
     }
 };

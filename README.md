@@ -9,12 +9,12 @@
 ##### Usage
 
 ``` npm
-npm install @bss_cli/ng -g
+npm install @hibiscus/cli -g
 ```
 
 ##### 概述
 
-> @bss_cli/ng 是基于angular6 + ng-zorro开发的一个快速开发平台。提供前端架构模板以及通用业务代码快捷生成方式；
+> @hibiscus/cli 是基于angular6 + ng-zorro开发的一个快速开发平台。提供前端架构模板以及通用业务代码快捷生成方式；
 
 
 

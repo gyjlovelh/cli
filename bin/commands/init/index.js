@@ -91,7 +91,7 @@ let handler = {
 
                 // 首次创建运行环境骨架
                 if (!fss.existsSync(`${sc.runtimeDir}/package.json`)) {
-                    log.info(identifier, cp.execSync(`ng new framework --skip-install --style=scss --skip-tests --prefix ${sc.production}`, {cwd: sc.runtimeRootDir}));
+                    log.info(identifier, cp.execSync(`ng new framework --skip-install --skip-git --skip-commit --style=scss --skip-tests --prefix ${sc.production}`, {cwd: sc.runtimeRootDir}));
                 }
 
                 //

@@ -12,6 +12,6 @@
 
     <bss-root></bss-root>
     <!-- 引入主题全局样式 -->
-    // <link id="theme_css" rel="stylesheet" type="text/css" href="assets/themes/{{module.theme}}/{{module.index}}.css">
+    <!-- <link id="theme_css" rel="stylesheet" type="text/css" href="assets/themes/{{module.theme}}/{{module.index}}.css"> -->
 </body>
 </html>

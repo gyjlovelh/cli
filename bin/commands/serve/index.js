@@ -6,13 +6,11 @@
  */
 
 const fss = require('fs-extra');
-const path = require('path');
 const cp = require('child_process');
 const log = require('../../util/logger');
 const func = require('../../util/func');
 const skeleton = require('../../skeleton/skeleton');
 const xlsx = require('node-xlsx');
-// const appConfig = require('../../util/app-config');
 
 const identifier = '[serve] ';
 
@@ -30,8 +28,6 @@ let handler = {
             // 自定义端口
             arg.port && args.push('--port', arg.port);
 
-
-
             // 1.拷贝资源
             copyResource();
 
@@ -44,7 +40,6 @@ let handler = {
 
             // 5.生成国际化文件
             genI18n();
-            return;
 
             // 6.运行runtime工程
             let serv;
@@ -150,7 +145,7 @@ let handler = {
                 ]
             };
             skeleton.resolveFramework(
-                path.join(__dirname, '../../skeleton/runtime_style'),
+                sc.runtimeStyleSkeleton,
                 `${sc.runtimeDir}/src`,
                 module,
                 {overwrite: true}
@@ -164,46 +159,56 @@ let handler = {
          */
         function genI18n() {
             // common工程的国际化配置和当前国际化配置
+            let i18n_keys = [], i18n_zh = {}, i18n_en = {};
             // 1.解析common工程的xlsx
-            let i18nFiles = [];
+            let i18n_files = [];
+           
             let wafI18nFile = `${sc.resourceDir}/1i8n/i18n.xlsx`;
 
             // 2.解析当前模块国际化配置
             let curI18nFile = `${sc.resourceDir}/i18n/i18n.xlsx`;
-            resolveI18nXlsx(curI18nFile);
+            let {zh, en} = resolveI18nXlsx(curI18nFile);
 
             // 3.生成中英文的json国际化文件
-
+            fss.outputJSONSync(`${sc.runtimeDir}/src/assets/i18n/zh.json`, zh, {spaces: 0});
+            fss.outputJSONSync(`${sc.runtimeDir}/src/assets/i18n/en.json`, en, {spaces: 0});
+            log.info(identifier, '国际化文件配置成功' + `${sc.runtimeDir}/src/assets/i18n`);
 
             function resolveI18nXlsx(file) {
                 let sheets = xlsx.parse(file);
+                
                 // 遍历所有sheet页
                 sheets.forEach(sheet => {
                     // 取sheet页名为 “词条”和“菜单”
-                    if (sheet.name === '词条名') {
-                        console.log(sheet.data);
+                    if (sheet.name === '词条名' || sheet.name === '菜单') {
                         if (sheet.data.length === 0) {
                             throw new Error('国际化xlsx文件至少有一行标题行');
                         }
                         let title_row = sheet.data[0];
+
+                        // 取sheet页第一行，取 "词条名"、"词条名_zh"、"词条名_en"的索引
                         let key_index = title_row.findIndex(item => item === '词条名');
                         let zh_index = title_row.findIndex(item => item === '词条名_zh');
                         let en_index = title_row.findIndex(item => item === '词条名_en');
 
-                        let i18n_zh = {}, i18n_en = {};
                         for (let i = 1; i < sheet.data.length; i++) {
                             let row = sheet.data[i];
-                            i18n_zh[row[key_index]] = row[zh_index];
-                            i18n_en[row[key_index]] = row[en_index];
+                            let key = row[key_index];
+                            if (i18n_keys.includes(key)) {
+                                log.warn(identifier, `国际化词条: ${key} 重复定义`);
+                            } else {
+                                i18n_keys.push(key);
+                            }
+                            i18n_zh[key] = row[zh_index];
+                            i18n_en[key] = row[en_index];
                         }
-                        let title = sheet.data[0];
-                        console.log(title);
-                        // 取sheet页第一行，取 "词条名"、"词条名_zh"、"词条名_en"的索引
-
 
                     }
                 });
-                console.log(sheets);
+                return {
+                    zh: i18n_zh, 
+                    en: i18n_en
+                }
             }
         }
     }

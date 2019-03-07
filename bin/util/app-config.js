@@ -128,10 +128,12 @@ let hendler = {
                 // 运行环境配置
                 runtimeRootDir: `${appJson.runtimePath}/${sub.name}`,
                 runtimeDir: `${appJson.runtimePath}/${sub.name}/framework`,
+
+                // 模板位置
                 runtimeAppSkeleton: path.join(__dirname, '../skeleton/runtime_app'),
                 runtimeTsconfigSkeleton: path.join(__dirname, '../skeleton/runtime_tsconfig'),
                 runtimeIndexSkeleton: path.join(__dirname, '../skeleton/runtime_index'),
-                runtimeStyleSkeleton: path.join(__dirname, '../skeleton/runtime_style/style.scss.art'),
+                runtimeStyleSkeleton: path.join(__dirname, '../skeleton/runtime_styles'),
                 // 归档配置
                 distDir: `${appJson.distPath}/${sub.name}`
             };

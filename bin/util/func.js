@@ -22,14 +22,32 @@ let handler = {
         return this.getSubConf(bss.selectedSub);
     },
 
+    /**
+     * 获取app的配置
+     */
     getAppConf() {
         return appConf.getApplicationConfig().bss;
     },
 
     /**
+     * 获取子应用所有依赖于平台的包
+     */
+    getSubDeps(name) {
+        const sc = this.getSubConf(name);
+        return [
+            sc.modulePkg,
+            sc.sharedPkg,
+            sc.resourcePkg,
+            ...this.getCommonDeps()
+        ];
+    },
+
+    /**
      * 获取common工程所有模块信息
      */
-    getCommonModules() {},
+    getCommonDeps() {
+        return [];
+    },
 
 
 };

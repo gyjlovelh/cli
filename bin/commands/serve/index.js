@@ -2,7 +2,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-27 22:36:17
- * @LastEditTime: 2019-03-07 12:38:04
+ * @LastEditTime: 2019-03-07 18:04:39
  */
 
 const fss = require('fs-extra');
@@ -11,6 +11,7 @@ const cp = require('child_process');
 const log = require('../../util/logger');
 const func = require('../../util/func');
 const skeleton = require('../../skeleton/skeleton');
+const xlsx = require('node-xlsx');
 // const appConfig = require('../../util/app-config');
 
 const identifier = '[serve] ';
@@ -39,8 +40,11 @@ let handler = {
             // 3.引入全局样式文件
             importGlobalStyle();
 
-            // 4.生成主题样式问题
+            // 4.生成主题样式文件
+
             // 5.生成国际化文件
+            genI18n();
+            return;
 
             // 6.运行runtime工程
             let serv;
@@ -152,6 +156,55 @@ let handler = {
                 {overwrite: true}
             );
             log.info(identifier, '引入全局样式成功' +  `${sc.runtimeDir}/src`);
+        }
+
+        /**
+         * 生成国际化文件
+         * @param {object} appCfg
+         */
+        function genI18n() {
+            // common工程的国际化配置和当前国际化配置
+            // 1.解析common工程的xlsx
+            let i18nFiles = [];
+            let wafI18nFile = `${sc.resourceDir}/1i8n/i18n.xlsx`;
+
+            // 2.解析当前模块国际化配置
+            let curI18nFile = `${sc.resourceDir}/i18n/i18n.xlsx`;
+            resolveI18nXlsx(curI18nFile);
+
+            // 3.生成中英文的json国际化文件
+
+
+            function resolveI18nXlsx(file) {
+                let sheets = xlsx.parse(file);
+                // 遍历所有sheet页
+                sheets.forEach(sheet => {
+                    // 取sheet页名为 “词条”和“菜单”
+                    if (sheet.name === '词条名') {
+                        console.log(sheet.data);
+                        if (sheet.data.length === 0) {
+                            throw new Error('国际化xlsx文件至少有一行标题行');
+                        }
+                        let title_row = sheet.data[0];
+                        let key_index = title_row.findIndex(item => item === '词条名');
+                        let zh_index = title_row.findIndex(item => item === '词条名_zh');
+                        let en_index = title_row.findIndex(item => item === '词条名_en');
+
+                        let i18n_zh = {}, i18n_en = {};
+                        for (let i = 1; i < sheet.data.length; i++) {
+                            let row = sheet.data[i];
+                            i18n_zh[row[key_index]] = row[zh_index];
+                            i18n_en[row[key_index]] = row[en_index];
+                        }
+                        let title = sheet.data[0];
+                        console.log(title);
+                        // 取sheet页第一行，取 "词条名"、"词条名_zh"、"词条名_en"的索引
+
+
+                    }
+                });
+                console.log(sheets);
+            }
         }
     }
 };

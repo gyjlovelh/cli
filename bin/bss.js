@@ -3,18 +3,22 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-01 08:51:20
- * @LastEditTime: 2019-03-04 14:31:34
+ * @LastEditTime: 2019-03-07 16:31:24
  */
 const commander = require('commander');
 const {init, ls, serve, install, update, publish} = require('./commands');
 
-commander.version('v1.0.0', '-v --version');
+commander.version('v1.0.0', '-v --version')
+    .allowUnknownOption(false);
 
 commander.command('init')
    .description('初始化WAF本地环境')
    .action(init);
 
 commander.command('install')
+    .arguments('[pkgs...]')
+    .option('-l --latest', '更新应用模块到最新版本')
+    .alias('i')
     .description('安装公共依赖')
     .action(install);
 

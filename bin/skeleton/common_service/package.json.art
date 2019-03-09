@@ -1,5 +1,5 @@
 {
-    "name": "{{module.pkg}}/{{module.name}}",
+    "name": "{{module.servicePkgPrefix}}/{{module.name}}",
     "version": "{{module.version}}",
     "license": "MIT",
     "dependencies": {}

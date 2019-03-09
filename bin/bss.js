@@ -3,10 +3,10 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-01 08:51:20
- * @LastEditTime: 2019-03-07 16:31:24
+ * @LastEditTime: 2019-03-08 13:35:51
  */
 const commander = require('commander');
-const {init, ls, serve, install, update, publish} = require('./commands');
+const {init, ls, serve, install, update, publish, doNew, doRemove} = require('./commands');
 
 commander.version('v1.0.0', '-v --version')
     .allowUnknownOption(false);
@@ -29,6 +29,15 @@ commander.command('update')
 commander.command('publish')
     .description('发布模块到仓库')
     .action(publish);
+
+
+commander.command('new <schema> <modName>')
+    .description('创建common工程模板')
+    .action(doNew);
+
+commander.command('remove <schema> <modName>')
+    .description('移除common工程中模板')
+    .action(doRemove);
 
 // commander.command('create <component>')
 //    .description('生成waf_grid组件')

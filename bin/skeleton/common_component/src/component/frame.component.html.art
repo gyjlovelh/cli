@@ -1,0 +1,1 @@
+<div>this is {{module.name}} component</div>

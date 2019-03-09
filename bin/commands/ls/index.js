@@ -3,14 +3,14 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-27 21:54:41
- * @LastEditTime: 2019-03-06 17:13:42
+ * @LastEditTime: 2019-03-08 09:39:28
  */
 const inquirer = require('inquirer');
 const fss = require('fs-extra');
 const path = require('path');
 const log = require('../../util/logger');
 const func = require('../../util/func');
-const identifier = '[应用] ';
+const identifier = '[use] ';
 
 function ls() {
     let appConf = func.getAppConf();

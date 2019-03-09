@@ -53,6 +53,23 @@ let hendler = {
 
         fss.outputJsonSync(path.join(__dirname, '../../config/application.json'), appJson, {spaces: 4});
 
+        // 初始化 bss-common.json配置
+        let bcJson = {
+            sourceCodePath: `${appJson.sourceCodePath}/common`,
+            module: {
+                sourceCodePath: `${appJson.sourceCodePath}/common/module`,
+                list: []
+            },
+            component: {
+                sourceCodePath: `${appJson.sourceCodePath}/common/component`,
+                list: []
+            },
+            service: {
+                sourceCodePath: `${appJson.sourceCodePath}/common/service`,
+                list: []
+            }
+        };
+        fss.outputJSONSync(path.join(__dirname, '../../config/bss-common.json'), bcJson, {spaces: 4});
     },
 
     initAppConf: function(appJson) {
@@ -74,8 +91,17 @@ let hendler = {
 
     initCommonConfig: function(appJson) {
         let root = `${appJson.sourceCodePath}/common`;
+
         let common = {
             name: 'common',
+            version: '1.0.0',
+            rulesDirectory: `${appJson.runtimePath}/demo/framework/node_modules/codelyzer`,
+            baseUrl: `${appJson.runtimePath}/demo/framework/node_modules`,
+
+            // common工程所有模块
+            module: [],
+            component: [],
+            service: [],
 
             // 发布包配置
             componentPkgPrefix: `@${appJson.production}_common_component`,
@@ -88,8 +114,32 @@ let hendler = {
             moduleDir: `${root}/module`,
             componentDir: `${root}/component`,
             serviceDir: `${root}/service`,
-            resourceDir: `${root}/resource`
+            resourceDir: `${root}/resource`,
+
+            // 模板位置
+            serviceSkeleton: path.join(__dirname, '../skeleton/common_service'),
+            moduleSkeleton: path.join(__dirname, '../skeleton/common_module'),
+            componentSkeleton: path.join(__dirname, '../skeleton/common_component')
         };
+
+        const bsJson = fss.readJSONSync(path.join(__dirname, '../../config/bss-common.json'));
+        let module = [], component = [], service = [];
+        bsJson.module.list.forEach(item => {
+            item = Object.assign({}, item);
+            item.pkg = `${common.modulePkgPrefix}/${item.name}`;
+            module.push(item);
+        });
+        bsJson.component.list.forEach(item => {
+            item = Object.assign({}, item);
+            item.pkg = `${common.componentPkgPrefix}/${item.name}`;
+            component.push(item);
+        });
+        bsJson.service.list.forEach(item => {
+            item = Object.assign({}, item);
+            item.pkg = `${common.servicePkgPrefix}/${item.name}`;
+            service.push(item);
+        });
+        common = Object.assign({module, component, service}, common);
         this.apps.set('common', common);
     },
 

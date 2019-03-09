@@ -10,6 +10,7 @@ const {serve} = require('./serve');
 const {install} = require('./install');
 const {update} = require('./update');
 const {publish} = require('./publish');
+const {doNew, doRemove} = require('./new');
 
 module.exports = {
     init,
@@ -17,5 +18,7 @@ module.exports = {
     serve,
     install,
     update,
-    publish
+    publish,
+    doNew,
+    doRemove
 };

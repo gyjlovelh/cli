@@ -2,7 +2,7 @@
  * @Author: guanyj
  * @Email: 18062791691@163.com
  * @Date: 2019-02-26 17:37:34
- * @LastEditTime: 2019-03-07 13:40:55
+ * @LastEditTime: 2019-03-08 09:39:43
  */
 'use strict';
 
@@ -12,13 +12,10 @@ const os = require('os');
 const log = require('../../util/logger');
 const appConfig = require('../../util/app-config');
 const func = require('../../util/func');
-const art = require('art-template');
-const path = require('path');
 const skeleton = require('../../skeleton/skeleton');
-const fnUtil = require('../../util/file-name.util');
 const cp = require('child_process');
 
-const identifier = '[初始化] ';
+const identifier = '[init] ';
 
 let handler = {
     init: function () {

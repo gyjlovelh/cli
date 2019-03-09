@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { {{module.camelName}}Component } from './{{module.filePrefix}}.component';
 
 /**
  * {{module.name}} 模块
@@ -9,7 +10,11 @@ import { CommonModule } from '@angular/common';
     imports: [
         CommonModule
     ],
-    declarations: [],
-    exports: []
+    declarations: [
+        {{module.camelName}}Component
+    ],
+    exports: [
+        {{module.camelName}}Component
+    ]
 })
 export class {{module.camelName}}Module { }

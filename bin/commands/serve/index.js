@@ -64,7 +64,7 @@ let handler = {
             // 7.开启文件改动监听
             fileChangeListener();
         } catch (err) {
-            throw new Error(err);
+            log.error(identifer, err);
         }
 
         // 监听文件变化

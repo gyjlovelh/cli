@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 
 @Component({
-    selector: 'waf-{{module.filePrefix}}',
-    templateUrl: './{{module.filePrefix}}.component.html',
-    styleUrls: ['./{{module.filePrefix}}.component.scss']
+    selector: '{{module.production}}-{{module.name}}',
+    templateUrl: './{{module.name}}.component.html',
+    styleUrls: ['./{{module.name}}.component.scss']
 })
 export class {{module.camelName}}Component implements OnInit {
 

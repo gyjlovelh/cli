@@ -6,7 +6,7 @@
  * @LastEditTime: 2019-03-08 13:35:51
  */
 const commander = require('commander');
-const {init, ls, serve, install, update, publish, doNew, doRemove} = require('./commands');
+const {init, ls, serve, install, update, publish, doNew, doRemove, doAdd} = require('./commands');
 
 commander.version('v1.0.0', '-v --version')
     .allowUnknownOption(false);
@@ -21,6 +21,12 @@ commander.command('install')
     .alias('i')
     .description('安装公共依赖')
     .action(install);
+
+commander.command('add')
+    .arguments('<pkgs...>')
+    .option('-s --shared', '向shared工程中追加依赖包')
+    .description('向当前工程中追加依赖包')
+    .action(doAdd);
 
 commander.command('update')
     .description('更新应用代码')

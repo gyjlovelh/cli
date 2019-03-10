@@ -1,26 +1,31 @@
 
-const logger = require('loglevel');
 const chalk = require('chalk');
+
+const prefix = chalk.magenta.bold;
+const c_info = chalk.hex('#67dc2e');
+const c_tip = chalk.hex('#1890ff');
+const c_warn = chalk.hex('#faad14');
+const c_error = chalk.hex('#f52a35');
 
 let handler = {
     info: function(identifer, msg) {
         handler.segLine(msg).forEach(line => {
-            console.log(chalk.cyanBright.bold(identifer) + chalk.whiteBright('[INFO] ') + chalk.white(line));
+            console.log(prefix(identifer) + c_info('[info] ' + line));
         });
     },
     tip: function(identifer, msg) {
         handler.segLine(msg).forEach(line => {
-            console.log(chalk.cyanBright.bold(identifer) + chalk.blue('[TIP] ') + chalk.white(line));
+            console.log(prefix(identifer) + c_tip('[tips] ' + line));
         });
     },
     warn: function(identifer, msg) {
         handler.segLine(msg).forEach(line => {
-            console.log(chalk.cyanBright.bold(identifer) + chalk.yellow('[WARN] ') + chalk.white(line));
+            console.log(prefix(identifer) + c_warn('[warn] ' + line));
         });
     },
     error: function(identifer, msg) {
         handler.segLine(msg).forEach(line => {
-            console.log(chalk.cyanBright.bold(identifer) + chalk.red('[ERROR] ') + chalk.redBright(line));
+            console.log(prefix(identifer) + c_error('[error] ' + line));
         });
     },
 

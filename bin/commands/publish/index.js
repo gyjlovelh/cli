@@ -27,7 +27,7 @@ let handler = {
 
             // cp.execSync(`npm config set registry=${appInfo.registry}`);
         } catch (err) {
-            throw new Error(err);
+            log.error(identifer, err);
         }
 
         function publishSubModule() {

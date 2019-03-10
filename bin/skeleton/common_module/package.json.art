@@ -1,6 +1,7 @@
 {
-    "name": "{{module.pkg}}/{{module.name}}",
+    "name": "{{module.modulePkgPrefix}}/{{module.name}}",
     "version": "{{module.version}}",
+    "author": "{{module.author}}",
     "license": "MIT",
     "dependencies": {}
 }

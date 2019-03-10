@@ -1,6 +1,7 @@
 {
     "name": "{{module.servicePkgPrefix}}/{{module.name}}",
     "version": "{{module.version}}",
+    "author": "{{module.author}}",
     "license": "MIT",
     "dependencies": {}
 }

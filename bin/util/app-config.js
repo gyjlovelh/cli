@@ -95,6 +95,7 @@ let hendler = {
         let common = {
             name: 'common',
             version: '1.0.0',
+            production: appJson.production,
             rulesDirectory: `${appJson.runtimePath}/demo/framework/node_modules/codelyzer`,
             baseUrl: `${appJson.runtimePath}/demo/framework/node_modules`,
 

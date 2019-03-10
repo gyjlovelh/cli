@@ -46,7 +46,7 @@ function install(pkgs, arg) {
         log.info(identifier, cp.execSync(`npm install`, {cwd: `${sc.runtimeDir}`}));
 
     } catch (err) {
-        throw new Error(err);
+        log.error(identifer, err);
     }
 }
 

@@ -11,6 +11,7 @@ const {install} = require('./install');
 const {update} = require('./update');
 const {publish} = require('./publish');
 const {doNew, doRemove} = require('./new');
+const {doAdd} = require('./add');
 
 module.exports = {
     init,
@@ -20,5 +21,6 @@ module.exports = {
     update,
     publish,
     doNew,
-    doRemove
+    doRemove,
+    doAdd
 };

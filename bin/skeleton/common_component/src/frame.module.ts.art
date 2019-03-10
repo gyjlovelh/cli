@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { {{module.camelName}}Component } from './{{module.filePrefix}}.component';
+import { {{module.camelName}}Component } from './component/{{module.name}}.component';
 
 /**
  * {{module.name}} 模块

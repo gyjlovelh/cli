@@ -11,19 +11,22 @@ const identifier = '[update] ';
 let handler = {
 
     update: function(params) {
+        try {
+            // 将开发目录中的代码复制到运行中
 
-        // 将开发目录中的代码复制到运行中
+            let sc = func.getCurSubConf();
 
-        let sc = func.getCurSubConf();
+            // 1.复制module中代码到 @xxx_module/subName
+            resolveSourceCode(`${sc.moduleDir}`, `${sc.runtimeDir}/node_modules/${sc.modulePkg}`);
 
-        // 1.复制module中代码到 @xxx_module/subName
-        resolveSourceCode(`${sc.moduleDir}`, `${sc.runtimeDir}/node_modules/${sc.modulePkg}`);
+            // 2.复制shared代码到 @xxx_shared/subName
+            resolveSourceCode(sc.sharedDir, `${sc.runtimeDir}/node_modules/${sc.sharedPkg}`);
 
-        // 2.复制shared代码到 @xxx_shared/subName
-        resolveSourceCode(sc.sharedDir, `${sc.runtimeDir}/node_modules/${sc.sharedPkg}`);
-
-        // 3.复制resource/scss 到 @xxx_resource/subName
-        resolveSourceCode(`${sc.resourceDir}/scss/src`, `${sc.runtimeDir}/node_modules/${sc.resourcePkg}/src`);
+            // 3.复制resource/scss 到 @xxx_resource/subName
+            resolveSourceCode(`${sc.resourceDir}/scss/src`, `${sc.runtimeDir}/node_modules/${sc.resourcePkg}/src`);
+        } catch (error) {
+            log.error(identifier, error);
+        }
 
         /**
          *

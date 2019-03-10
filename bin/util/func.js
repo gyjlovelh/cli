@@ -1,4 +1,5 @@
 const appConf = require('./app-config');
+const fss = require('fs-extra');
 
 let handler = {
 
@@ -34,11 +35,12 @@ let handler = {
      */
     getSubDeps(name) {
         const sc = this.getSubConf(name);
+        const commonDeps = fss.readJSONSync(`${sc.moduleDir}/package.json`).dependencies;
         return [
             sc.modulePkg,
             sc.sharedPkg,
             sc.resourcePkg,
-            ...this.getCommonDeps()
+            ...Object.keys(commonDeps)
         ];
     },
 
@@ -48,7 +50,6 @@ let handler = {
     getCommonDeps() {
         return [];
     },
-
 
 };
 

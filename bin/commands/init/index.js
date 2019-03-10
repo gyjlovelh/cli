@@ -14,6 +14,7 @@ const appConfig = require('../../util/app-config');
 const func = require('../../util/func');
 const skeleton = require('../../skeleton/skeleton');
 const cp = require('child_process');
+const cache = require('../../util/cache');
 
 const identifier = '[init] ';
 
@@ -37,7 +38,7 @@ let handler = {
             }];
             inquirer.prompt(steps).then(handleInit);
         } catch (err) {
-            throw new Error(err);
+            log.error(identifer, err);
         }
 
         /**
@@ -64,6 +65,7 @@ let handler = {
             fss.ensureDirSync(commonConf.componentDir);
             fss.ensureDirSync(commonConf.serviceDir);
             fss.ensureDirSync(commonConf.resourceDir);
+            cache.scanCommonElement();
 
             // 3.生成子应用工程
             func.getAppConf().subs.forEach(sub => {

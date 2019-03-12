@@ -23,7 +23,7 @@
 
 > 编译目录以及归档目录需要在application.json中配置；
 
-```json
+```js
 {
     "name": "hibiscus",  // 产品名
     "production": "hbs", // 产品简写

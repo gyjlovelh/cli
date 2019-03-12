@@ -112,17 +112,17 @@ D:\sourceCode\cli\cli>bss serve
 
 ##### 命令大全
 
-1. [Init](./commands/init/readme.md)
+1. [Init](/bin/commands/init/readme.md)
 
-2. [Install](./bin/commands/install/readme.md)
+2. [Install](/bin/commands/install/readme.md)
 
-3. [update](./bin/commands/update/readme.md)
+3. [update](/bin/commands/update/readme.md)
 
-4. [serve](./bin/commands/serve/readme.md)
+4. [serve](/bin/commands/serve/readme.md)
 
-5. [publish](./bin/commands/publish/readme.md)
+5. [publish](/bin/commands/publish/readme.md)
 
-6. [ls](./bin/commands/ls/readme.md)
+6. [ls](/bin/commands/ls/readme.md)
    
 
 ##### 开发目录结构

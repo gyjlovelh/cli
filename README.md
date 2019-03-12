@@ -112,17 +112,17 @@ D:\sourceCode\cli\cli>bss serve
 
 ##### 命令大全
 
-1. [Init]: ./commands/init/readme.md	"初始化应用骨架"
+1. [Init]: (./commands/init/readme.md)	"初始化应用骨架"
 
-2. [Install]: ./bin/commands/install/readme.md	"安装依赖"
+2. [Install]: (./bin/commands/install/readme.md)	"安装依赖"
 
-3. [update]: ./bin/commands/update/readme.md	"更新代码到运行环境"
+3. [update]: (./bin/commands/update/readme.md)	"更新代码到运行环境"
 
-4. [serve]: ./bin/commands/serve/readme.md	"运行项目"
+4. [serve]: (./bin/commands/serve/readme.md)"运行项目"
 
-5. [publish]: ./bin/commands/publish/readme.md	"发布项目"
+5. [publish]: (./bin/commands/publish/readme.md)	"发布项目"
 
-6. [ls]: ./bin/commands/ls/readme.md	"查看所有子应用"
+6. [ls]: (./bin/commands/ls/readme.md)	"查看所有子应用"
    
 
 

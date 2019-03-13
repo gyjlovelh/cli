@@ -124,43 +124,43 @@ D:\sourceCode\cli\cli>bss serve
 ##### 开发目录结构
 
 ```tex
-|- sourceCode/												工作目录
-|   |- application.json										应用配置文件
-|   |- common/												app产品公共层
-|   |	|- module											产品公共功能模块
-|   |	|	|- login												
-|   |	|- component										产品公共组件模块
-|   |	|	|- grid
-|   |	|- service											产品公共服务模块
-|   |	|	|- http
-|   |	|- resource											产品公共资源模块
-|   |	|	|- i18n											公共模块国际化
-|   |	|	|	|-i18n.xlsx
-|   |	|	|- theme										产品主题模块
-|   |	|	|- iconfont										产品字体图标库
-|   |- business/											子产品目录
-|   |	|- module/											子产品功能模块
-|   |	|	|- src/
-|   |	|	|	|- child_business/
-|   |	|	|	|	|- child_business.component.ts
-|   |	|	|	|- business.component.ts
-|   |	|	|	|- business.module.ts
-|   |	|	|	|- business-routing.module.ts
-|   |	|	|- package.json
-|   |   |- shared/											子产品公共模块
-|   |	|	|- src/
-|   |	|	|	|- shared.module.ts
-|   |	|	|- package.json
-|	|	|- resource											子产品资源模块
-|	|	|	|- i18n													
-|	| 	|	|	|- i18n.xlsx
-|	|	|	|- config										开发阶段环境配置
-|   |	|	|	|- http.json
-|   |	|	|	|- websocket.json   
-|	|	|	|- scss											子产品全局样式
-|	|	|	|	|- src
-|	|	|	|	|	|- global.scss
-|	|	|	|	|- package.json
+|- sourceCode/                              工作目录
+|   |- application.json                     应用配置文件
+|   |- common/                              app产品公共层
+|   |   |- module                           产品公共功能模块
+|   |   |   |- login
+|   |   |- component                        产品公共组件模块
+|   |   |   |- grid
+|   |   |- service                          产品公共服务模块
+|   |   |   |- http
+|   |   |- resource                         产品公共资源模块
+|   |   |   |- i18n                         公共模块国际化
+|   |   |   |   |-i18n.xlsx
+|   |   |   |- theme                        产品主题模块
+|   |   |   |- iconfont                     产品字体图标库
+|   |- business/                            子产品目录
+|   |   |- module/                          子产品功能模块
+|   |   |   |- src/
+|   |   |   |   |- child_business/
+|   |   |   |   |   |- child_business.component.ts
+|   |   |   |   |- business.component.ts
+|   |   |   |   |- business.module.ts
+|   |   |   |   |- business-routing.module.ts
+|   |   |   |- package.json
+|   |   |- shared/                          子产品公共模块
+|   |   |   |- src/
+|   |   |   |   |- shared.module.ts
+|   |   |   |- package.json
+|   |   |- resource                         子产品资源模块
+|   |   |   |- i18n
+|   |   |   |   |- i18n.xlsx
+|   |   |   |- config                       开发阶段环境配置
+|   |   |   |   |- http.json
+|   |   |   |   |- websocket.json
+|   |   |   |- scss                         子产品全局样式
+|   |   |   |   |- src
+|   |   |   |   |   |- global.scss
+|   |   |   |   |- package.json
 
 ```
 

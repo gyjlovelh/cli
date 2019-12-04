@@ -3,6 +3,7 @@
 const fss = require('fs-extra');
 const path = require('path');
 const log = require('./logger');
+const os = require('os');
 const fnUtil = require('../util/file-name.util');
 
 let hendler = {
@@ -38,6 +39,16 @@ let hendler = {
     initApplicationConfig: function(params) {
         const appJson = fss.readJSONSync(params.sourceCodePath + '/application.json');
         appJson.sourceCodePath = params.sourceCodePath;
+        if (os.type() === 'Windows_NT') {
+            // windows
+            appJson.runtimePath = 'd:/workspace/runtime';
+            appJson.distDir = 'd:/workspace/dist';
+        } else {
+            // MacOs
+            appJson.runtimePath = '/Users/guanyj/workspace/runtime';
+            appJson.distDir = '/Users/guanyj/workspace/dist';
+        }
+
         appJson.subs = appJson.subs.map(sub => {
             // json中统一小横线
             sub.name = fnUtil.camelToLetter( fnUtil.anyToCamel(sub.name) );

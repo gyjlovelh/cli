@@ -12,7 +12,7 @@ commander.version('v1.0.0', '-v --version')
     .allowUnknownOption(false);
 
 commander.command('init')
-   .description('初始化WAF本地环境')
+   .description('初始化Orchid本地环境')
    .action(init);
 
 commander.command('install')

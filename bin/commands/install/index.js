@@ -39,14 +39,14 @@ function install(pkgs, arg) {
         }
 
         // 修正rxjs版本
-        pkg.dependencies.rxjs = '6.0.0';
+        // pkg.dependencies.rxjs = '6.0.0';
         fss.outputJSONSync(`${sc.runtimeDir}/package.json`, pkg, {spaces: 4});
         // 指定node-sass的下载源
         // log.info(identifier, cp.execSync(`npm config set sass-binary-site http://npm.taobao.org/mirrors/node-sass`));
         log.info(identifier, cp.execSync(`npm install`, {cwd: `${sc.runtimeDir}`}));
 
     } catch (err) {
-        log.error(identifer, err);
+        log.error(identifier, err);
     }
 }
 

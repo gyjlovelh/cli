@@ -18,6 +18,12 @@ const cache = require('../../util/cache');
 
 const identifier = '[init] ';
 
+const winSourceCodePath = 'd:/workspace/sourceCode';
+const osSourceCodePath = '/Users/guanyj/workspace/sourceCode';
+
+const winVirtualPath = 'd:/workspace/runtime';
+const osVirtualPath = '/Users/guanyj/workspace/runtime';
+
 let handler = {
     init: function () {
         try {
@@ -25,10 +31,10 @@ let handler = {
             log.info(identifier, '当前操作为' + os.type());
             if (os.type() === 'Windows_NT') {
                 // windows
-                defaultSourceCodePath = 'd:/workspace/sourceCode';
+                defaultSourceCodePath = winSourceCodePath;
             } else {
                 // MacOs
-                defaultSourceCodePath = '/Users/guanyj/workspace/sourceCode';
+                defaultSourceCodePath = osSourceCodePath;
             }
             let steps = [{
                 type: 'input',
@@ -108,7 +114,7 @@ let handler = {
                 pkg.dependencies[sc.resourcePkg] = '~1.0.0';
 
                 // 修正 rxjs@6.4.0 无法正常启动BUG
-                pkg.dependencies.rxjs = `^6.0.0`;
+                // pkg.dependencies.rxjs = `^6.0.0`;
 
                 fss.outputJSONSync(`${sc.runtimeDir}/package.json`, pkg, {spaces: 4});
                 log.info(identifier, '[修改文件] ' + `${sc.runtimeDir}/package.json`);

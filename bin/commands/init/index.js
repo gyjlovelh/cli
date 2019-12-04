@@ -103,10 +103,8 @@ let handler = {
                 const pkg = fss.readJSONSync(`${sc.runtimeDir}/package.json`);
                 // 写入公共依赖
                  // todo
-                // pkg.dependencies[`@bss_common_components/xxx`] = `~1.0.0`;
-                // pkg.dependencies[`@bss_common_modules/xxx`] = `~1.0.0`;
-                // pkg.dependencies[`@bss_common_services/xxx`] = `~1.0.0`;
-                // pkg.dependencies[`@bss_common_resource/xxx`] = `~1.0.0`;
+                // pkg.dependencies[`@orchid_components/grid`] = `~1.0.0`;
+                // pkg.dependencies[`@orchid_components/form`] = `~1.0.0`;
 
                 // 写入子应用模块
                 pkg.dependencies[sc.modulePkg] = '~1.0.0';

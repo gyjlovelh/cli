@@ -10,7 +10,7 @@
 </head>
 <body>
 
-    <bss-root></bss-root>
+    <orchid-root></orchid-root>
     <!-- 引入主题全局样式 -->
     <!-- <link id="theme_css" rel="stylesheet" type="text/css" href="assets/themes/{{module.theme}}/{{module.index}}.css"> -->
 </body>

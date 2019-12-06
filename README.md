@@ -53,7 +53,7 @@ npm install @hibiscus/cli -g
 > 初始化
 
 ```shell
-D:\sourceCode\cli\cli>bss init
+D:\sourceCode\cli\cli>orchid init
 [初始化] [INFO] 当前操作为Windows_NT
 ? 请输入产品工作空间路径 d:/workspace/sourceCode
 [初始化] [INFO] 同步application.json
@@ -69,7 +69,7 @@ D:\sourceCode\cli\cli>bss init
 > 切换子应用
 
 ```shell
-D:\workspace>bss ls
+D:\workspace>orchid ls
 [app] [INFO] 读取application.json文件.
 ? 选择子应用
   user-project
@@ -85,7 +85,7 @@ npm config set registry http://sinopia:4873
 > 安装依赖。
 
 ```shell
-D:\sourceCode\cli\cli>bss install
+D:\sourceCode\cli\cli>orchid install
 [app] [INFO] 读取application.json文件.
 [install] [INFO] > node-sass@4.11.0 install d:\workspace\runtime\topology\framework\node_modules\node-sass
 [install] [INFO] > node scripts/install.js
@@ -101,7 +101,7 @@ D:\sourceCode\cli\cli>bss install
 > 启动服务
 
 ```shell
-D:\sourceCode\cli\cli>bss serve
+D:\sourceCode\cli\cli>orchid serve
 [app] [INFO] 读取application.json文件.
 [copy] [INFO] 复制文件：d:/workspace/sourceCode/topology/resource/config => d:/workspace/runtime/topology/framework/src/assets/config
 [render] [INFO] 覆盖文件d:/workspace/runtime/topology/framework/src/styles.scss
@@ -169,6 +169,6 @@ D:\sourceCode\cli\cli>bss serve
 ##### 快速生成模板文件 [进行中...]
 
 ```shell
-bss create <template> 
+orchid create <template> 
 ```
 

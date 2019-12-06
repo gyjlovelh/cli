@@ -98,13 +98,20 @@ let handler = {
                 if (!fss.existsSync(`${sc.runtimeDir}/package.json`)) {
                     log.info(identifier, cp.execSync(`ng new framework --skip-install --skip-git --skip-commit --style=scss --skip-tests --prefix ${sc.production}`, {cwd: sc.runtimeRootDir}));
                 }
-
-                //
                 const pkg = fss.readJSONSync(`${sc.runtimeDir}/package.json`);
-                // 写入公共依赖
-                 // todo
-                // pkg.dependencies[`@orchid_components/grid`] = `~1.0.0`;
-                // pkg.dependencies[`@orchid_components/form`] = `~1.0.0`;
+
+                // 写入UI框架
+                pkg.dependencies[`ng-zorro-antd`] = `^7.5.1`;
+                pkg.dependencies[`echarts`] = `^4.2.1`;
+                pkg.dependencies[`lodash`] = `^4.17.14`;
+                pkg.dependencies[`ngx-echarts`] = `^4.2.1`;
+
+
+
+                // 写入平台公共模块
+                func.getPlatformDependencies().forEach(key => {
+                    pkg.dependencies[key] = '~1.0.0';
+                });
 
                 // 写入子应用模块
                 pkg.dependencies[sc.modulePkg] = '~1.0.0';
@@ -133,6 +140,7 @@ let handler = {
                     sc.modulePkg,
                     sc.sharedPkg,
                     sc.resourcePkg,
+                    ...func.getPlatformDependencies()
                 ];
                 skeleton.resolveFramework(
                     sc.runtimeTsconfigSkeleton,
@@ -148,6 +156,26 @@ let handler = {
                     {name: sub.name},
                     {overwrite: true}
                 );
+
+                // 6.引入ng-zorro-antd 引入样式与 SVG 资源
+                let ngJson = fss.readJSONSync(`${sc.runtimeDir}/angular.json`);
+
+                ngJson.projects.framework.architect.build.options.assets = [
+                    "src/favicon.ico",
+                    "src/assets",
+                    {
+                        "glob": "**/*",
+                        "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                        "output": "/assets/"
+                    }
+                ];
+
+                ngJson.projects.framework.architect.build.options.styles = [
+                    "src/styles.scss",
+                    "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+                    "node_modules/@orchid_component/icon/assets/global.scss"
+                ];
+                fss.outputJSONSync(`${sc.runtimeDir}/angular.json`, ngJson, {spaces: 4});
 
             });
 

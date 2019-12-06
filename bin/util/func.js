@@ -4,6 +4,31 @@ const fss = require('fs-extra');
 let handler = {
 
     /**
+     * 获取平台依赖
+     */
+    getPlatformDependencies() {
+        return [
+            "@orchid_component/grid",
+            "@orchid_component/form",
+            "@orchid_component/async-container",
+            "@orchid_component/echarts",
+            "@orchid_component/icon",
+            "@orchid_component/layout",
+            "@orchid_component/tree-selector",
+            "@orchid_service/auth",
+            "@orchid_service/context",
+            "@orchid_service/date",
+            "@orchid_service/event",
+            "@orchid_service/http",
+            "@orchid_service/router",
+            "@orchid_service/storage",
+            "@orchid_service/tpi",
+            "@orchid_service/utils",
+            "@orchid_resource/themes",
+        ];
+    },
+
+    /**
      * 获取指定子应用配置信息
      * @param {string} name
      */
@@ -19,15 +44,15 @@ let handler = {
      * 获取当前子应用信息
      */
     getCurSubConf() {
-        const {bss} = appConf.getApplicationConfig();
-        return this.getSubConf(bss.selectedSub);
+        const {orchid} = appConf.getApplicationConfig();
+        return this.getSubConf(orchid.selectedSub);
     },
 
     /**
      * 获取app的配置
      */
     getAppConf() {
-        return appConf.getApplicationConfig().bss;
+        return appConf.getApplicationConfig().orchid;
     },
 
     /**

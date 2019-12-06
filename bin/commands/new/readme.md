@@ -4,10 +4,10 @@
 
 ##### 使用方式
 
-> 新建一个临时目录，添加setting.json文件。然后在当前目录打开命令行，执行`bss new <schema>`命令，会在当前目录下生成对应的代码。
+> 新建一个临时目录，添加setting.json文件。然后在当前目录打开命令行，执行`orchid new <schema>`命令，会在当前目录下生成对应的代码。
 
 ```shell
-➜  ~ bss new grid
+➜  ~ orchid new grid
 ```
 
 ##### 举例

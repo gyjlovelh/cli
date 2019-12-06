@@ -2,5 +2,10 @@
     "name": "{{module.modulePkg}}",
     "version": "{{module.version}}",
     "license": "MIT",
+    "files": [
+        "src",
+        "index.ts",
+        "package.json"
+    ],
     "dependencies": {}
 }

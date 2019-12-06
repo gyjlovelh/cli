@@ -5,7 +5,7 @@
 ##### 使用方式
 
 ```shell
-➜  ~ bss ls
+➜  ~ orchid ls
 ? 选择子应用 (Use arrow keys)
 ❯ manage-project 
   task-project 

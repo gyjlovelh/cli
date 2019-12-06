@@ -88,7 +88,7 @@ let handler = {
                         // 兼容windows系统
                         path = path.replace(/\\/g, '/');
                         let dest = path.split(`/${sc.name}/module/`)[1];
-                        let dest_path = `${sc.runtimeDir}/node_modules/${sc.modulePkg}}/${dest}`;
+                        let dest_path = `${sc.runtimeDir}/node_modules/${sc.modulePkg}/${dest}`;
                         // 将变更文件复制到runtime环境
                         fss.copySync(path, dest_path, {
                             overwrite: true
@@ -109,7 +109,7 @@ let handler = {
                     // 兼容windows系统
                     path = path.replace(/\\/g, '/');
                     let dest = path.split(`/${sc.name}/shared/`)[1];
-                    let dest_path = `${sc.runtimeDir}/node_modules/${sharedPkg}}/${dest}`;
+                    let dest_path = `${sc.runtimeDir}/node_modules/${sharedPkg}/${dest}`;
                     // 将变更文件复制到runtime环境
                     fss.copySync(path, dest_path, {
                         overwrite: true
@@ -162,7 +162,7 @@ let handler = {
             let i18n_keys = [], i18n_zh = {}, i18n_en = {};
             // 1.解析common工程的xlsx
             let i18n_files = [];
-           
+
             let wafI18nFile = `${sc.resourceDir}/1i8n/i18n.xlsx`;
 
             // 2.解析当前模块国际化配置
@@ -176,7 +176,7 @@ let handler = {
 
             function resolveI18nXlsx(file) {
                 let sheets = xlsx.parse(file);
-                
+
                 // 遍历所有sheet页
                 sheets.forEach(sheet => {
                     // 取sheet页名为 “词条”和“菜单”
@@ -206,7 +206,7 @@ let handler = {
                     }
                 });
                 return {
-                    zh: i18n_zh, 
+                    zh: i18n_zh,
                     en: i18n_en
                 }
             }

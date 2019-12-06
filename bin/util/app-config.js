@@ -9,7 +9,7 @@ const fnUtil = require('../util/file-name.util');
 let hendler = {
 
     /** bss配置 */
-    bss: {},
+    orchid: {},
 
     /** app配置表 */
     apps: new Map(),
@@ -18,7 +18,7 @@ let hendler = {
      * 获取应用信息
      */
     getApplicationConfig: function() {
-        if (Object.keys(this.bss).length === 0) {
+        if (Object.keys(this.orchid).length === 0) {
             log.info('[app] ', '读取application.json文件.');
             let appJson = fss.readJSONSync(path.join(__dirname, '../../config/application.json'));
 
@@ -28,7 +28,7 @@ let hendler = {
 
             this.initSubsConfig(appJson);
         }
-        return {bss: this.bss, apps: this.apps};
+        return {orchid: this.orchid, apps: this.apps};
     },
 
     /**
@@ -64,7 +64,7 @@ let hendler = {
 
         fss.outputJsonSync(path.join(__dirname, '../../config/application.json'), appJson, {spaces: 4});
 
-        // 初始化 bss-common.json配置
+        // 初始化 orchid-common.json配置
         let bcJson = {
             sourceCodePath: `${appJson.sourceCodePath}/common`,
             module: {
@@ -80,12 +80,12 @@ let hendler = {
                 list: []
             }
         };
-        fss.outputJSONSync(path.join(__dirname, '../../config/bss-common.json'), bcJson, {spaces: 4});
+        fss.outputJSONSync(path.join(__dirname, '../../config/orchid-common.json'), bcJson, {spaces: 4});
     },
 
     initAppConf: function(appJson) {
         // 设置私服
-        this.bss = {
+        this.orchid = {
             name: appJson.name,
             production: appJson.production,
             version: appJson.version,
@@ -134,7 +134,7 @@ let hendler = {
             componentSkeleton: path.join(__dirname, '../skeleton/common_component')
         };
 
-        const bsJson = fss.readJSONSync(path.join(__dirname, '../../config/bss-common.json'));
+        const bsJson = fss.readJSONSync(path.join(__dirname, '../../config/orchid-common.json'));
         let module = [], component = [], service = [];
         bsJson.module.list.forEach(item => {
             item = Object.assign({}, item);

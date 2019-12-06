@@ -4,10 +4,10 @@
 
 ##### 使用方式
 
-> 在任意路径都可以执行 bss init
+> 在任意路径都可以执行 orchid init
 
 ```shell
-➜  ~ bss init
+➜  ~ orchid init
 ```
 
 > 输出产品的工作目录，此目录下需要有application.json配置产品初始化信息；

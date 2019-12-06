@@ -5,6 +5,6 @@
 ##### 使用方式
 
 ```shell
-➜  ~ bss serve 
+➜  ~ orchid serve 
 ```
 

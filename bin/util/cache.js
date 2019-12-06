@@ -11,11 +11,11 @@ let handler = {
 
     /**
      * 记录common模块变化
-     * @param {string} eleType 
-     * @param {object} eleInfo 
+     * @param {string} eleType
+     * @param {object} eleInfo
      */
     addElementToCommon(eleType, eleInfo) {
-        const commonJson = fss.readJSONSync(path.join(__dirname, '../../config/bss-common.json'));
+        const commonJson = fss.readJSONSync(path.join(__dirname, '../../config/orchid-common.json'));
         const curList = commonJson[eleType].list;
         if (curList.find(item => item.name === eleInfo.name)) {
             log.error(identifer, `${eleInfo.name}模块已经存在，请确认~`);
@@ -30,14 +30,14 @@ let handler = {
         }
         curList.push(eleInfo);
         log.warn(identifer, `成功添加${eleInfo.name}模块`)
-        fss.outputJSONSync(path.join(__dirname, '../../config/bss-common.json'), commonJson, {spaces: 4});
+        fss.outputJSONSync(path.join(__dirname, '../../config/orchid-common.json'), commonJson, {spaces: 4});
     },
     /**
      * 扫描common工程所有模块
      */
     scanCommonElement() {
         const commonSc = func.getSubConf('common');
-        const commonJson = fss.readJSONSync(path.join(__dirname, '../../config/bss-common.json'));
+        const commonJson = fss.readJSONSync(path.join(__dirname, '../../config/orchid-common.json'));
         commonJson.module.list = [];
         commonJson.component.list = [];
         commonJson.service.list = [];
@@ -81,7 +81,7 @@ let handler = {
             });
             log.info(identifer, `| 读取: ${module.name}@${module.version} 模块信息至缓存~`)
         });
-        fss.outputJSONSync(path.join(__dirname, '../../config/bss-common.json'), commonJson, {spaces: 4});
+        fss.outputJSONSync(path.join(__dirname, '../../config/orchid-common.json'), commonJson, {spaces: 4});
         log.info(identifer, '************************ 扫描common工程 end ************************');
     }
 

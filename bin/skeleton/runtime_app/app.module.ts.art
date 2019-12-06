@@ -3,7 +3,30 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
+
+/** 引入第三方依赖 */
+import { NgZorroAntdModule, NZ_I18N, zh_CN } from 'ng-zorro-antd';
+/** 配置 angular i18n **/
+import { registerLocaleData } from '@angular/common';
+import zh from '@angular/common/locales/zh';
+registerLocaleData(zh);
+
+/** 引入平台依赖 */
+import {OrchidGridModule} from '@orchid_component/grid';
+import {OrchidFormModule} from '@orchid_component/form';
+import {OrchidIconModule} from '@orchid_component/icon';
+import {OrchidAsyncContainerModule} from '@orchid_component/async-container';
+import {OrchidEchartsModule} from '@orchid_component/echarts';
+import {StorageModule} from '@orchid_service/storage';
+import {TpiModule} from '@orchid_service/tpi';
+import {AuthModule} from '@orchid_service/auth';
+import {RouterModule as OrchidRouterModule} from '@orchid_service/router';
+import {HttpModule, ProxyService} from '@orchid_service/http';
+import {DateModule} from '@orchid_service/date';
+import {ContextModule} from '@orchid_service/context';
+import {EventModule} from '@orchid_service/event';
 
 import { {{module.camelName}}Module } from '{{module.modulePkg}}'
 
@@ -15,11 +38,31 @@ import { {{module.camelName}}Module } from '{{module.modulePkg}}'
         BrowserModule,
         CommonModule,
         FormsModule,
+        HttpClientModule,
+        NgZorroAntdModule,
         ReactiveFormsModule,
+
+        OrchidIconModule,
+        OrchidAsyncContainerModule,
+        OrchidEchartsModule,
+        OrchidGridModule,
+        OrchidFormModule,
+        EventModule,
+        ContextModule,
+        DateModule,
+        HttpModule,
+        OrchidRouterModule,
+        AuthModule,
+        StorageModule,
+        TpiModule,
+
         RouterModule.forRoot([]),
         {{module.camelName}}Module
     ],
-    providers: [],
+    /** 配置 ng-zorro-antd 国际化（文案 及 日期） **/
+    providers   : [
+        { provide: NZ_I18N, useValue: zh_CN }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
